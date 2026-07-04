@@ -18,14 +18,14 @@
 
 ## 📁 專案結構
 
-\`\`\`
+```
 addons/
 ├── audio_manager/     # 音效管理
 ├── demo/                  # 整合示範場景
 ├── save_system/       # 存檔系統
 ├── scene_manager/     # 場景切換管理
 ├── ui_kit/            # UI 元件庫
-\`\`\`
+```
 
 每個工具資料夾底下都有自己的 README，請說明怎麼用。
 
