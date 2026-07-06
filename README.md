@@ -35,7 +35,7 @@ addons/
 2. 開發完成後 push，並開 Pull Request 到 main
 3. 小改動可自行 merge；新增功能建議找人 review 一下
 
-不熟 Git？看這裡：[Git 教學影片連結]
+不熟 Git？看這裡：[Git 教學影片連結](https://youtu.be/9HyXQdwecOM)
 
 ### PR 標題格式
 
