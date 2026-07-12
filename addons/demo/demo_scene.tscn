@@ -6,8 +6,6 @@
 [ext_resource type="Script" uid="uid://dmk2jx8jds7b1" path="res://addons/ui_kit/scripts/pause_menu.gd" id="3_ipj0l"]
 [ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="3_xeoil"]
 
-[sub_resource type="GDScript" id="GDScript_e2c8i"]
-
 [node name="DemoScene" type="Node2D" unique_id=796875137]
 
 [node name="UI_testbot" type="Node2D" parent="." unique_id=1558456933]
@@ -48,7 +46,6 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
-script = SubResource("GDScript_e2c8i")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Control/Panel" unique_id=1657826946]
 layout_mode = 1
