@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c8skac804ej1c"]
+
+[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/ui_kit/scripts/UIManager.gd" id="1_0ix4j"]
+
+[node name="UIManager" type="Node" unique_id=1187133615]
+process_mode = 3
+script = ExtResource("1_0ix4j")

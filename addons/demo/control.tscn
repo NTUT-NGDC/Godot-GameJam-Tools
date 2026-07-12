@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://b2qlh43arl6ua"]
+
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_8o6fj"]
+
+[node name="Control" type="Control" unique_id=594562745]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BlackPanel" type="ColorRect" parent="." unique_id=1712110650]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.41568628)
+
+[node name="Panel" type="Panel" parent="." unique_id=340705791]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=606200075]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 17
+
+[node name="PAUSE_testword" type="Label" parent="Panel/VBoxContainer" unique_id=1907270290]
+layout_mode = 2
+theme = ExtResource("1_8o6fj")
+theme_override_font_sizes/font_size = 200
+text = "暫停"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=420166441]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = ExtResource("1_8o6fj")
+text = "繼續遊戲"
+
+[node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=103599910]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = ExtResource("1_8o6fj")
+text = "離開遊戲"
