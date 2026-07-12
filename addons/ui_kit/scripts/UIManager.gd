@@ -1,5 +1,7 @@
 extends Node
 
+###以下皆為暫停選單相關###
+
 @onready var pause_menu = $"../PauseMenu"
 
 func _process(delta):
@@ -11,3 +13,5 @@ func toggle_pause():
 	get_tree().paused = !get_tree().paused
 	
 	pause_menu.visible = get_tree().paused
+	
+###以上皆為暫停選單相關###

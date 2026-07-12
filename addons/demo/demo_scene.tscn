@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://dyuej8uh8uukq"]
 
-[ext_resource type="Script" uid="uid://bcd0nlk1xubgy" path="res://addons/demo/UI_testbot.gd" id="1_75ofk"]
+[ext_resource type="Script" uid="uid://bcd0nlk1xubgy" path="res://addons/ui_kit/scripts/UI_testbot.gd" id="1_75ofk"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_nauda"]
-[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/demo/game_manager.gd" id="3_e2c8i"]
+[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/ui_kit/scripts/UIManager.gd" id="3_e2c8i"]
+[ext_resource type="Script" uid="uid://dmk2jx8jds7b1" path="res://addons/ui_kit/scripts/pause_menu.gd" id="3_ipj0l"]
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="3_xeoil"]
+
+[sub_resource type="GDScript" id="GDScript_e2c8i"]
 
 [node name="DemoScene" type="Node2D" unique_id=796875137]
 
@@ -16,32 +20,68 @@ texture = ExtResource("2_nauda")
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=825604652]
 process_mode = 2
 visible = false
+script = ExtResource("3_ipj0l")
 
-[node name="Panel" type="Control" parent="PauseMenu" unique_id=214034580]
+[node name="Control" type="Control" parent="PauseMenu" unique_id=214034580]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -576.0
-offset_top = -324.0
-offset_right = 576.0
-offset_bottom = 324.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PAUSE" type="Label" parent="PauseMenu" unique_id=416188088]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="BlackPanel" type="ColorRect" parent="PauseMenu/Control" unique_id=1742222342]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.41568628)
+
+[node name="Panel" type="Panel" parent="PauseMenu/Control" unique_id=122924103]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_e2c8i")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Control/Panel" unique_id=1657826946]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 17
+
+[node name="PAUSE_testword" type="Label" parent="PauseMenu/Control/Panel/VBoxContainer" unique_id=416188088]
+layout_mode = 2
+theme = ExtResource("3_xeoil")
 theme_override_font_sizes/font_size = 200
 text = "暫停"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GameManager" type="Node" parent="." unique_id=758280540]
+[node name="ResumeButton" type="Button" parent="PauseMenu/Control/Panel/VBoxContainer" unique_id=258441840]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = ExtResource("3_xeoil")
+text = "繼續遊戲"
+
+[node name="QuitButton" type="Button" parent="PauseMenu/Control/Panel/VBoxContainer" unique_id=1580746147]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = ExtResource("3_xeoil")
+text = "離開遊戲"
+
+[node name="UIManager" type="Node" parent="." unique_id=758280540]
 process_mode = 3
 script = ExtResource("3_e2c8i")
+
+[connection signal="pressed" from="PauseMenu/Control/Panel/VBoxContainer/ResumeButton" to="PauseMenu" method="_on_resume_button_pressed"]
+[connection signal="pressed" from="PauseMenu/Control/Panel/VBoxContainer/QuitButton" to="PauseMenu" method="_on_quit_button_pressed"]
