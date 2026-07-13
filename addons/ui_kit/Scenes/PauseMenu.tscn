@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dmk2jx8jds7b1" path="res://addons/ui_kit/scripts/pause_menu.gd" id="1_rvj63"]
 
 [node name="PauseMenu" type="Control" unique_id=62765627]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

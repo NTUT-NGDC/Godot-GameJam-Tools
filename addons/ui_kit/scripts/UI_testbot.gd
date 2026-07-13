@@ -8,3 +8,5 @@ func _ready():
 #delta是幀與幀之間的時間
 func _physics_process(delta):
 	rotation += delta
+
+var hp = 10

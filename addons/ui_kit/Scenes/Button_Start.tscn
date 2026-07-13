@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://b1ym46r8k5wvt"]
+
+[ext_resource type="Script" uid="uid://c3bsvtxw7u45x" path="res://addons/ui_kit/scripts/button_start.gd" id="1_i68lg"]
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_pggis"]
+
+[node name="Button_Start" type="Control" unique_id=2130497237]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i68lg")
+
+[node name="Button_Start" type="Button" parent="." unique_id=662435691]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -15.5
+offset_right = 36.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_pggis")
+theme_override_colors/font_pressed_color = Color(0.60702324, 0.51843274, 0.7823955, 1)
+text = "開始遊戲"
+flat = true
+
+[connection signal="pressed" from="Button_Start" to="." method="_on_button_start_pressed"]
