@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://bo04ibv18ggb8"]
+
+[ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Scripts/audio_test_2.gd" id="1_3hm33"]
+[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_3wjwb"]
+[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_4p800"]
+
+[node name="AudioTest2" type="Control" unique_id=273768765]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3hm33")
+
+[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("3_4p800")]
+layout_mode = 1
+
+[node name="change_bgm" type="Button" parent="." unique_id=694211514]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -252.0
+offset_top = -68.0
+offset_right = 252.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "切換成第一首BGM"
+icon = ExtResource("2_3wjwb")
+
+[node name="PLAY_SFX" type="Button" parent="." unique_id=804912522]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -252.0
+offset_top = -224.0
+offset_right = 252.0
+offset_bottom = -88.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "播放音效"
+icon = ExtResource("2_3wjwb")
+
+[connection signal="pressed" from="change_bgm" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="PLAY_SFX" to="." method="_on_play_sfx_pressed"]

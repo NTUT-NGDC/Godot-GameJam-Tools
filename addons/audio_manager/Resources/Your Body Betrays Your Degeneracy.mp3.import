@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bbf6o7l2ui33g"
+path="res://.godot/imported/Your Body Betrays Your Degeneracy.mp3-ba695e4d1417d7b0f630da8ab8df60af.mp3str"
+
+[deps]
+
+source_file="res://addons/audio_manager/Resources/Your Body Betrays Your Degeneracy.mp3"
+dest_files=["res://.godot/imported/Your Body Betrays Your Degeneracy.mp3-ba695e4d1417d7b0f630da8ab8df60af.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
