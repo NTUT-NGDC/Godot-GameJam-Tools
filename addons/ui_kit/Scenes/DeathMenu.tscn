@@ -1,16 +1,16 @@
-[gd_scene format=3 uid="uid://dkd4k3w8r8cck"]
+[gd_scene format=3 uid="uid://cpb774dnri31j"]
 
-[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_63xnr"]
-[ext_resource type="Script" uid="uid://n6vv3q0170i0" path="res://addons/ui_kit/Scripts/pause_menu.gd" id="1_rvj63"]
+[ext_resource type="Script" uid="uid://cdeph03lmpudv" path="res://addons/ui_kit/Scripts/death_menu.gd" id="1_nm5qa"]
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="2_b8muu"]
 
-[node name="PauseMenu" type="Control" unique_id=62765627]
+[node name="DeathMenu" type="Control" unique_id=62765627]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rvj63")
+script = ExtResource("1_nm5qa")
 
 [node name="BlackPanel" type="ColorRect" parent="." unique_id=1157902062]
 layout_mode = 1
@@ -42,23 +42,23 @@ theme_override_constants/separation = 17
 
 [node name="PAUSE_testword" type="Label" parent="Panel/VBoxContainer" unique_id=1627349138]
 layout_mode = 2
-theme = ExtResource("1_63xnr")
+theme = ExtResource("2_b8muu")
 theme_override_font_sizes/font_size = 200
-text = "暫停"
+text = "你鼠了"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=255267190]
+[node name="RestartButton" type="Button" parent="Panel/VBoxContainer" unique_id=255267190]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme = ExtResource("1_63xnr")
-text = "繼續遊戲"
+theme = ExtResource("2_b8muu")
+text = "重新開始"
 
 [node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=873282510]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme = ExtResource("1_63xnr")
+theme = ExtResource("2_b8muu")
 text = "離開遊戲"
 
-[connection signal="pressed" from="Panel/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

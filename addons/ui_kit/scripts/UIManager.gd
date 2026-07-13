@@ -7,6 +7,9 @@ extends Node
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	#連接玩家死亡事件
+	var player = $"../UI_testbot"
+	player.player_died.connect(show_death_menu)
 
 #ui_cancel是內建的ESC離開按鍵綁定
 #接下來使用toggle_pause
@@ -22,3 +25,14 @@ func toggle_pause():
 	pause_menu.visible = get_tree().paused
 	
 ###以上皆為暫停選單相關###
+
+###以下為死亡選單###
+
+@onready var death_menu = $Canvas/DeathMenu
+
+func show_death_menu():	
+	await get_tree().create_timer(0.1).timeout
+	# 顯示死亡畫面
+	death_menu.visible = true
+	# 停止遊戲
+	get_tree().paused = true

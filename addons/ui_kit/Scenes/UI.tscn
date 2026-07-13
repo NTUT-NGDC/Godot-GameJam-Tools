@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://cm0iw228xe6qp"]
 
+[ext_resource type="PackedScene" uid="uid://cpb774dnri31j" path="res://addons/ui_kit/Scenes/DeathMenu.tscn" id="2_2tei2"]
 [ext_resource type="PackedScene" uid="uid://dkd4k3w8r8cck" path="res://addons/ui_kit/Scenes/PauseMenu.tscn" id="2_7s1m1"]
-[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/ui_kit/scripts/UIManager.gd" id="3_7s1m1"]
+[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/ui_kit/Scripts/UIManager.gd" id="3_7s1m1"]
 
 [node name="UI" type="Node2D" unique_id=989037398]
 script = ExtResource("3_7s1m1")
@@ -9,4 +10,6 @@ script = ExtResource("3_7s1m1")
 [node name="Canvas" type="CanvasLayer" parent="." unique_id=2138612321]
 process_mode = 2
 
-[node name="PauseMenu" parent="Canvas" unique_id=62765627 instance=ExtResource("2_7s1m1")]
+[node name="DeathMenu" parent="Canvas" unique_id=62765627 instance=ExtResource("2_2tei2")]
+
+[node name="PauseMenu" parent="Canvas" unique_id=561787320 instance=ExtResource("2_7s1m1")]
