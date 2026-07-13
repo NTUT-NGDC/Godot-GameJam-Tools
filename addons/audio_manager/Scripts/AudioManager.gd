@@ -1,22 +1,38 @@
 extends Node
 
-# ---------- 設定 ----------
+# =========================================================
+# 設定
+# =========================================================
 const BGM_BUS := "BGM"
 const SFX_BUS := "SFX"
 const SFX_POOL_SIZE := 8          # 音效池大小,可依專案調整
 const DEFAULT_FADE_TIME := 1.0    # BGM 淡入淡出秒數
+const SFX_COOLDOWN_TIME := 0.05   # 同一個音效,間隔小於這個秒數就忽略,避免爆音
 
-# ---------- BGM 雙軌交叉淡化 ----------
+# =========================================================
+# 音效名稱查找表(由 SoundBank 節點註冊進來)
+# =========================================================
+var _bgm_lookup: Dictionary = {}  # key: 名字(String), value: AudioStream
+var _sfx_lookup: Dictionary = {}
+
+# =========================================================
+# BGM 雙軌交叉淡化
+# =========================================================
 var _bgm_players: Array[AudioStreamPlayer] = []
 var _active_bgm_index := 0
-var _current_bgm_stream: AudioStream = null
+var _current_bgm_name: String = ""
 var _bgm_tween: Tween
 
-# ---------- SFX 音效池 ----------
+# =========================================================
+# SFX 音效池
+# =========================================================
 var _sfx_pool: Array[AudioStreamPlayer] = []
 var _sfx_pool_index := 0
+var _sfx_last_played_time: Dictionary = {}  # key: AudioStream, value: 上次播放時間
 
-# ---------- 音量 / 靜音狀態 ----------
+# =========================================================
+# 音量 / 靜音狀態
+# =========================================================
 var bgm_volume: float = 1.0 : set = set_bgm_volume
 var sfx_volume: float = 1.0 : set = set_sfx_volume
 var muted: bool = false : set = set_muted
@@ -40,15 +56,32 @@ func _ready() -> void:
 
 
 # =========================================================
-# 對外 API
+# 註冊音效(給 SoundBank 節點呼叫,不需要手動使用)
 # =========================================================
 
-## 播放 BGM,若已有 BGM 在播放,會自動做淡入淡出交叉切換
-func play_bgm(track: AudioStream, fade_time: float = DEFAULT_FADE_TIME) -> void:
-	if track == _current_bgm_stream:
+func register_bgm(sound_name: String, stream: AudioStream) -> void:
+	_bgm_lookup[sound_name] = stream
+
+
+func register_sfx(sound_name: String, stream: AudioStream) -> void:
+	_sfx_lookup[sound_name] = stream
+
+
+# =========================================================
+# 對外 API:BGM
+# =========================================================
+
+## 播放 BGM(用名字呼叫,例如 "battle_theme"),若已有 BGM 在播放,會自動交叉淡化切換
+func play_bgm(track_name: String, fade_time: float = DEFAULT_FADE_TIME) -> void:
+	if not _bgm_lookup.has(track_name):
+		push_warning("[AudioManager] 找不到名叫 '" + track_name + "' 的BGM,請檢查 SoundBank 設定")
+		return
+
+	if track_name == _current_bgm_name:
 		return  # 同一首就不重播
 
-	_current_bgm_stream = track
+	var track: AudioStream = _bgm_lookup[track_name]
+	_current_bgm_name = track_name
 
 	var old_player := _bgm_players[_active_bgm_index]
 	var new_index := 1 - _active_bgm_index
@@ -78,16 +111,35 @@ func play_bgm(track: AudioStream, fade_time: float = DEFAULT_FADE_TIME) -> void:
 ## 停止目前 BGM(淡出)
 func stop_bgm(fade_time: float = DEFAULT_FADE_TIME) -> void:
 	var player := _bgm_players[_active_bgm_index]
-	_current_bgm_stream = null
+	_current_bgm_name = ""
 	var tween := create_tween()
 	tween.tween_property(player, "volume_db", -80.0, fade_time)
 	tween.tween_callback(player.stop)
 
 
-## 播放音效,自動從音效池取用可用的 player,避免爆音疊加
-func play_sfx(sound: AudioStream, volume_offset_db: float = 0.0) -> void:
+# =========================================================
+# 對外 API:SFX
+# =========================================================
+
+## 播放音效(用名字呼叫,例如 "click"),自動從音效池取用可用的 player,
+## 並自動避免同一個音效短時間內大量疊加造成爆音
+func play_sfx(sound_name: String, volume_offset_db: float = 0.0) -> void:
+	if not _sfx_lookup.has(sound_name):
+		push_warning("[AudioManager] 找不到名叫 '" + sound_name + "' 的音效,請檢查 SoundBank 設定")
+		return
+
+	var sound: AudioStream = _sfx_lookup[sound_name]
 	if sound == null:
 		return
+
+	# ---- 冷卻檢查:避免同一個音效短時間內被大量重複播放 ----
+	var current_time := Time.get_ticks_msec() / 1000.0
+	if _sfx_last_played_time.has(sound):
+		var last_time: float = _sfx_last_played_time[sound]
+		if current_time - last_time < SFX_COOLDOWN_TIME:
+			return  # 太近了,直接忽略這次播放請求
+
+	_sfx_last_played_time[sound] = current_time
 
 	var player := _get_available_sfx_player()
 	player.stream = sound
@@ -108,7 +160,6 @@ func set_bgm_volume(value: float) -> void:
 
 func set_sfx_volume(value: float) -> void:
 	sfx_volume = clamp(value, 0.0, 1.0)
-	# SFX 是短音效,不需要即時改變已播放中的音量,下一次 play_sfx 生效即可
 
 
 func set_muted(value: bool) -> void:
@@ -130,7 +181,6 @@ func _get_available_sfx_player() -> AudioStreamPlayer:
 		if not p.playing:
 			return p
 
-	# 全部都在忙 -> 用輪替索引搶用最舊的那個
 	var player := _sfx_pool[_sfx_pool_index]
 	_sfx_pool_index = (_sfx_pool_index + 1) % _sfx_pool.size()
 	return player

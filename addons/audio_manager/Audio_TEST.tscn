@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_2v54i"]
 [ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_llda1"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Mute.tscn" id="4_0700n"]
+[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="5_2r7nv"]
 
 [node name="AudioTest" type="Control" unique_id=273768765]
 layout_mode = 3
@@ -60,6 +61,10 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_top = 176.0
 offset_bottom = 176.0
+
+[node name="SoundBank" type="Node" parent="." unique_id=1257109134]
+script = ExtResource("5_2r7nv")
+metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 
 [connection signal="pressed" from="change_bgm" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="PLAY_SFX" to="." method="_on_play_sfx_pressed"]
