@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Scripts/audio_test_2.gd" id="1_3hm33"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_3wjwb"]
 [ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_4p800"]
+[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_1mlmn"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Mute.tscn" id="4_inm6s"]
 [ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="5_1rbyt"]
 [ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="6_1mlmn"]
@@ -50,6 +51,11 @@ theme_override_font_sizes/font_size = 32
 text = "切換成第一首BGM"
 icon = ExtResource("2_3wjwb")
 
+[node name="SFXOnButtonPress" type="Node" parent="change_bgm" unique_id=659545236]
+script = ExtResource("4_1mlmn")
+sfx_name = "SFX1"
+metadata/_custom_type_script = "uid://bqyejsebtnaqn"
+
 [node name="PLAY_SFX" type="Button" parent="." unique_id=804912522]
 layout_mode = 1
 anchors_preset = 8
@@ -67,6 +73,11 @@ theme_override_font_sizes/font_size = 32
 text = "播放音效"
 icon = ExtResource("2_3wjwb")
 
+[node name="SFXOnButtonPress" type="Node" parent="PLAY_SFX" unique_id=2017925677]
+script = ExtResource("4_1mlmn")
+sfx_name = "SFX1"
+metadata/_custom_type_script = "uid://bqyejsebtnaqn"
+
 [node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("4_inm6s")]
 layout_mode = 1
 anchors_preset = 8
@@ -81,7 +92,7 @@ offset_bottom = 176.0
 script = ExtResource("5_1rbyt")
 bgm_entries = Array[ExtResource("6_1mlmn")]([SubResource("Resource_qtbbn")])
 sfx_entries = Array[ExtResource("6_1mlmn")]([SubResource("Resource_dab0x")])
+auto_play_bgm = "BGM2"
 metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 
 [connection signal="pressed" from="change_bgm" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="PLAY_SFX" to="." method="_on_play_sfx_pressed"]
