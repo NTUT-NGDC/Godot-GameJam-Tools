@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://c2o5fde5ngl2x"]
+
+[ext_resource type="Script" uid="uid://c6tik38wahuqm" path="res://addons/audio_manager/Scripts/mute.gd" id="1_wtw5l"]
+
+[node name="Mute" type="Control" unique_id=1999784504]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wtw5l")
+
+[node name="MuteToggle" type="CheckButton" parent="." unique_id=102832869]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.0
+offset_top = -26.5
+offset_right = 56.0
+offset_bottom = 26.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "靜音"
+
+[connection signal="toggled" from="MuteToggle" to="." method="_on_mute_toggle_toggled"]
