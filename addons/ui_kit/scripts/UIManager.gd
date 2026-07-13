@@ -2,7 +2,7 @@ extends Node
 
 ###以下皆為暫停選單相關###
 
-@onready var pause_menu = $"../PauseMenu"
+@onready var pause_menu = $Canvas/PauseMenu
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):

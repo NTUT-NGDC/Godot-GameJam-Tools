@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bcd0nlk1xubgy" path="res://addons/ui_kit/scripts/UI_testbot.gd" id="1_75ofk"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_nauda"]
-[ext_resource type="PackedScene" uid="uid://cm0iw228xe6qp" path="res://addons/ui_kit/Scenes/pause_menu.tscn" id="3_e2c8i"]
+[ext_resource type="PackedScene" uid="uid://cm0iw228xe6qp" path="res://addons/ui_kit/Scenes/UI.tscn" id="3_e2c8i"]
 
 [node name="DemoScene" type="Node2D" unique_id=796875137]
 
@@ -13,4 +13,4 @@ script = ExtResource("1_75ofk")
 position = Vector2(190, 141)
 texture = ExtResource("2_nauda")
 
-[node name="PauseMenu" parent="." unique_id=989037398 instance=ExtResource("3_e2c8i")]
+[node name="UI" parent="." unique_id=989037398 instance=ExtResource("3_e2c8i")]
