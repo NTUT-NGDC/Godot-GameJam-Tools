@@ -5,6 +5,25 @@
 [ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_llda1"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Mute.tscn" id="4_0700n"]
 [ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="5_2r7nv"]
+[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="6_wsx3x"]
+[ext_resource type="AudioStream" uid="uid://ba5rl7wy6h1h2" path="res://addons/audio_manager/Resources/The Insulindian Miracle.mp3" id="7_qlg0v"]
+[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="9_xs1cy"]
+
+[sub_resource type="Resource" id="Resource_cci7x"]
+script = ExtResource("6_wsx3x")
+sound_name = "BGM1"
+stream = ExtResource("7_qlg0v")
+metadata/_custom_type_script = "uid://636kc80aamku"
+
+[sub_resource type="Resource" id="Resource_4cena"]
+script = ExtResource("6_wsx3x")
+metadata/_custom_type_script = "uid://636kc80aamku"
+
+[sub_resource type="Resource" id="Resource_5yige"]
+script = ExtResource("6_wsx3x")
+sound_name = "SFX1"
+stream = ExtResource("9_xs1cy")
+metadata/_custom_type_script = "uid://636kc80aamku"
 
 [node name="AudioTest" type="Control" unique_id=273768765]
 layout_mode = 3
@@ -64,6 +83,9 @@ offset_bottom = 176.0
 
 [node name="SoundBank" type="Node" parent="." unique_id=1257109134]
 script = ExtResource("5_2r7nv")
+bgm_entries = Array[ExtResource("6_wsx3x")]([SubResource("Resource_cci7x"), SubResource("Resource_4cena")])
+sfx_entries = Array[ExtResource("6_wsx3x")]([SubResource("Resource_5yige")])
+auto_play_bgm = "BGM1"
 metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 
 [connection signal="pressed" from="change_bgm" to="." method="_on_button_pressed"]
