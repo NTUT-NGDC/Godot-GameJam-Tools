@@ -1,13 +1,11 @@
 [gd_scene format=3 uid="uid://dyuej8uh8uukq"]
 
-[ext_resource type="Script" uid="uid://d2wlsxmx148ev" path="res://addons/ui_kit/scripts/UI_testbot.gd" id="1_75ofk"]
+[ext_resource type="Script" uid="uid://d2wlsxmx148ev" path="res://addons/ui_kit/Scripts/UI_testbot.gd" id="1_75ofk"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_nauda"]
 [ext_resource type="PackedScene" uid="uid://cm0iw228xe6qp" path="res://addons/ui_kit/Scenes/UI.tscn" id="3_e2c8i"]
-[ext_resource type="PackedScene" uid="uid://qwphif7ey8ry" path="res://addons/ui_kit/Scenes/Button_QUIT.tscn" id="4_ipj0l"]
-[ext_resource type="Script" uid="uid://b347akfw3gqk2" path="res://addons/ui_kit/scripts/UIManager.gd" id="4_rnlit"]
-[ext_resource type="PackedScene" uid="uid://b1ym46r8k5wvt" path="res://addons/ui_kit/Scenes/Button_Start.tscn" id="5_mwyt6"]
+[ext_resource type="PackedScene" uid="uid://qwphif7ey8ry" path="res://addons/ui_kit/Scenes/QuitButton.tscn" id="4_ipj0l"]
+[ext_resource type="PackedScene" uid="uid://b1ym46r8k5wvt" path="res://addons/ui_kit/Scenes/StartButton.tscn" id="5_mwyt6"]
 [ext_resource type="PackedScene" uid="uid://cxaioh4c5c15h" path="res://addons/ui_kit/Scenes/HealthBar.tscn" id="6_mwyt6"]
-[ext_resource type="Script" uid="uid://deucr3s51cx8m" path="res://addons/ui_kit/scripts/health_bar.gd" id="8_1tw8l"]
 
 [node name="DemoScene" type="Node2D" unique_id=796875137]
 
@@ -19,7 +17,6 @@ position = Vector2(190, 141)
 texture = ExtResource("2_nauda")
 
 [node name="UI" parent="." unique_id=989037398 instance=ExtResource("3_e2c8i")]
-script = ExtResource("4_rnlit")
 
 [node name="Button_QUIT" parent="." unique_id=128373212 instance=ExtResource("4_ipj0l")]
 anchors_preset = 0
@@ -55,4 +52,3 @@ offset_bottom = 56.0
 grow_horizontal = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("8_1tw8l")
