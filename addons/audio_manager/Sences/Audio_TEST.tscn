@@ -1,36 +1,36 @@
 [gd_scene format=3 uid="uid://snamo70qbd2g"]
 
-[ext_resource type="Script" uid="uid://csh7w8e0i52or" path="res://addons/audio_manager/Scripts/audio_test.gd" id="1_stx3q"]
-[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_2v54i"]
-[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_llda1"]
-[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Mute.tscn" id="4_0700n"]
-[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_wsx3x"]
-[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="5_2r7nv"]
-[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="6_wsx3x"]
-[ext_resource type="AudioStream" uid="uid://ba5rl7wy6h1h2" path="res://addons/audio_manager/Resources/The Insulindian Miracle.mp3" id="7_qlg0v"]
-[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="9_xs1cy"]
-[ext_resource type="AudioStream" uid="uid://dpfv74itj2nv6" path="res://addons/audio_manager/Resources/Retro PowerUP 23.wav" id="10_bnj7x"]
+[ext_resource type="Script" uid="uid://csh7w8e0i52or" path="res://addons/audio_manager/Scripts/audio_test.gd" id="1_5mpyl"]
+[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/Sences/BGMVolumeSlider.tscn" id="2_xtkjl"]
+[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_rlytj"]
+[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_m01lj"]
+[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_0tt6i"]
+[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="6_ca412"]
+[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="7_b5wwq"]
+[ext_resource type="AudioStream" uid="uid://ba5rl7wy6h1h2" path="res://addons/audio_manager/Resources/The Insulindian Miracle.mp3" id="8_61q73"]
+[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="9_uq0lx"]
+[ext_resource type="AudioStream" uid="uid://dpfv74itj2nv6" path="res://addons/audio_manager/Resources/Retro PowerUP 23.wav" id="10_lm41f"]
 
 [sub_resource type="Resource" id="Resource_cci7x"]
-script = ExtResource("6_wsx3x")
+script = ExtResource("7_b5wwq")
 sound_name = "BGM1"
-stream = ExtResource("7_qlg0v")
+stream = ExtResource("8_61q73")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [sub_resource type="Resource" id="Resource_4cena"]
-script = ExtResource("6_wsx3x")
+script = ExtResource("7_b5wwq")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [sub_resource type="Resource" id="Resource_5yige"]
-script = ExtResource("6_wsx3x")
+script = ExtResource("7_b5wwq")
 sound_name = "SFX1"
-stream = ExtResource("9_xs1cy")
+stream = ExtResource("9_uq0lx")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [sub_resource type="Resource" id="Resource_dab0x"]
-script = ExtResource("6_wsx3x")
+script = ExtResource("7_b5wwq")
 sound_name = "sfxTT"
-stream = ExtResource("10_bnj7x")
+stream = ExtResource("10_lm41f")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [node name="AudioTest" type="Control" unique_id=273768765]
@@ -40,9 +40,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_stx3q")
+script = ExtResource("1_5mpyl")
 
-[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("3_llda1")]
+[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("2_xtkjl")]
 layout_mode = 1
 
 [node name="change_bgm" type="Button" parent="." unique_id=1082408514]
@@ -60,10 +60,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "切換成第二首BGM"
-icon = ExtResource("2_2v54i")
+icon = ExtResource("3_rlytj")
 
 [node name="SFXOnButtonPress" type="Node" parent="change_bgm" unique_id=392856434]
-script = ExtResource("4_wsx3x")
+script = ExtResource("4_m01lj")
 sfx_name = "SFX1"
 metadata/_custom_type_script = "uid://bqyejsebtnaqn"
 
@@ -82,14 +82,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "播放音效"
-icon = ExtResource("2_2v54i")
+icon = ExtResource("3_rlytj")
 
 [node name="SFXOnButtonPress" type="Node" parent="PLAY_SFX" unique_id=2039211039]
-script = ExtResource("4_wsx3x")
+script = ExtResource("4_m01lj")
 sfx_name = "SFX1"
 metadata/_custom_type_script = "uid://bqyejsebtnaqn"
 
-[node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("4_0700n")]
+[node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("5_0tt6i")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -100,9 +100,9 @@ offset_top = 176.0
 offset_bottom = 176.0
 
 [node name="SoundBank" type="Node" parent="." unique_id=1257109134]
-script = ExtResource("5_2r7nv")
-bgm_entries = Array[ExtResource("6_wsx3x")]([SubResource("Resource_cci7x"), SubResource("Resource_4cena")])
-sfx_entries = Array[ExtResource("6_wsx3x")]([SubResource("Resource_5yige"), SubResource("Resource_dab0x")])
+script = ExtResource("6_ca412")
+bgm_entries = Array[ExtResource("7_b5wwq")]([SubResource("Resource_cci7x"), SubResource("Resource_4cena")])
+sfx_entries = Array[ExtResource("7_b5wwq")]([SubResource("Resource_5yige"), SubResource("Resource_dab0x")])
 auto_play_bgm = "BGM1"
 metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 

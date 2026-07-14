@@ -1,25 +1,25 @@
 [gd_scene format=3 uid="uid://bo04ibv18ggb8"]
 
-[ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Scripts/audio_test_2.gd" id="1_3hm33"]
-[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="2_3wjwb"]
-[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/BGMVolumeSlider.tscn" id="3_4p800"]
-[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_1mlmn"]
-[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Mute.tscn" id="4_inm6s"]
-[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="5_1rbyt"]
-[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="6_1mlmn"]
-[ext_resource type="AudioStream" uid="uid://bbf6o7l2ui33g" path="res://addons/audio_manager/Resources/Your Body Betrays Your Degeneracy.mp3" id="7_dg46c"]
-[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="8_jbxf6"]
+[ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Scripts/audio_test_2.gd" id="1_u61q7"]
+[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/Sences/BGMVolumeSlider.tscn" id="2_fv6jm"]
+[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_7ovkf"]
+[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_8cn4j"]
+[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_76wlk"]
+[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="6_50i77"]
+[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="7_0wca2"]
+[ext_resource type="AudioStream" uid="uid://bbf6o7l2ui33g" path="res://addons/audio_manager/Resources/Your Body Betrays Your Degeneracy.mp3" id="8_wf2y4"]
+[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="9_reart"]
 
 [sub_resource type="Resource" id="Resource_qtbbn"]
-script = ExtResource("6_1mlmn")
+script = ExtResource("7_0wca2")
 sound_name = "BGM2"
-stream = ExtResource("7_dg46c")
+stream = ExtResource("8_wf2y4")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [sub_resource type="Resource" id="Resource_dab0x"]
-script = ExtResource("6_1mlmn")
+script = ExtResource("7_0wca2")
 sound_name = "SFX1"
-stream = ExtResource("8_jbxf6")
+stream = ExtResource("9_reart")
 metadata/_custom_type_script = "uid://636kc80aamku"
 
 [node name="AudioTest2" type="Control" unique_id=273768765]
@@ -29,9 +29,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_3hm33")
+script = ExtResource("1_u61q7")
 
-[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("3_4p800")]
+[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("2_fv6jm")]
 layout_mode = 1
 
 [node name="change_bgm" type="Button" parent="." unique_id=694211514]
@@ -49,10 +49,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "切換成第一首BGM"
-icon = ExtResource("2_3wjwb")
+icon = ExtResource("3_7ovkf")
 
 [node name="SFXOnButtonPress" type="Node" parent="change_bgm" unique_id=659545236]
-script = ExtResource("4_1mlmn")
+script = ExtResource("4_8cn4j")
 sfx_name = "SFX1"
 metadata/_custom_type_script = "uid://bqyejsebtnaqn"
 
@@ -71,14 +71,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "播放音效"
-icon = ExtResource("2_3wjwb")
+icon = ExtResource("3_7ovkf")
 
 [node name="SFXOnButtonPress" type="Node" parent="PLAY_SFX" unique_id=2017925677]
-script = ExtResource("4_1mlmn")
+script = ExtResource("4_8cn4j")
 sfx_name = "SFX1"
 metadata/_custom_type_script = "uid://bqyejsebtnaqn"
 
-[node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("4_inm6s")]
+[node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("5_76wlk")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -89,9 +89,9 @@ offset_top = 176.0
 offset_bottom = 176.0
 
 [node name="SoundBank" type="Node" parent="." unique_id=1633712891]
-script = ExtResource("5_1rbyt")
-bgm_entries = Array[ExtResource("6_1mlmn")]([SubResource("Resource_qtbbn")])
-sfx_entries = Array[ExtResource("6_1mlmn")]([SubResource("Resource_dab0x")])
+script = ExtResource("6_50i77")
+bgm_entries = Array[ExtResource("7_0wca2")]([SubResource("Resource_qtbbn")])
+sfx_entries = Array[ExtResource("7_0wca2")]([SubResource("Resource_dab0x")])
 auto_play_bgm = "BGM2"
 metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 
