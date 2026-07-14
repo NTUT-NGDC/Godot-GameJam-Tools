@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dnx2sxoffvack"
-path="res://.godot/imported/Retro Blop 22.wav-24e166cd50eb6eae81e414e74b219c96.sample"
+path="res://.godot/imported/Retro Blop 22.wav-ac748784c20d09720cdda19efc2d760d.sample"
 
 [deps]
 
-source_file="res://addons/audio_manager/Resources/Retro Blop 22.wav"
-dest_files=["res://.godot/imported/Retro Blop 22.wav-24e166cd50eb6eae81e414e74b219c96.sample"]
+source_file="res://addons/audio_manager/Tests/Resources/Retro Blop 22.wav"
+dest_files=["res://.godot/imported/Retro Blop 22.wav-ac748784c20d09720cdda19efc2d760d.sample"]
 
 [params]
 

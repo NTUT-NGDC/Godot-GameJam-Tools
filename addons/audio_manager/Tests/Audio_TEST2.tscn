@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://bo04ibv18ggb8"]
 
-[ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Scripts/audio_test_2.gd" id="1_u61q7"]
+[ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Tests/audio_test_2.gd" id="1_u61q7"]
 [ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/Sences/BGMVolumeSlider.tscn" id="2_fv6jm"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_7ovkf"]
 [ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_8cn4j"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_76wlk"]
 [ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="6_50i77"]
 [ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="7_0wca2"]
-[ext_resource type="AudioStream" uid="uid://bbf6o7l2ui33g" path="res://addons/audio_manager/Resources/Your Body Betrays Your Degeneracy.mp3" id="8_wf2y4"]
-[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Resources/Retro Blop 22.wav" id="9_reart"]
+[ext_resource type="AudioStream" uid="uid://bbf6o7l2ui33g" path="res://addons/audio_manager/Tests/Resources/Your Body Betrays Your Degeneracy.mp3" id="8_wf2y4"]
+[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Tests/Resources/Retro Blop 22.wav" id="9_reart"]
 
 [sub_resource type="Resource" id="Resource_qtbbn"]
 script = ExtResource("7_0wca2")

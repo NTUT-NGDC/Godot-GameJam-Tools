@@ -1,7 +1,9 @@
 
 #使用說明
-`在專案設定-全域，加入AudioManager.gd`
-如果要查看使用效果，請開啟Audio_TEST.tscn。
+`在專案設定-全域，加入AudioManager.tscn`
+如果要查看使用效果，請開啟Tests資料夾的Audio_TEST.tscn。
+Tests資料夾內的文件可以隨意刪除，不影響本工具使用。
+
 
 #如何新增背景音樂(BGM)？
 1.在場景搜尋SoundBank子節點，將其加入需要BGM的場景，並開啟SoundBank的Inspector(屬性檢視器)。
@@ -45,13 +47,16 @@ AudioManager.play_bgm(`自行輸入的BGM名稱`)
 AudioManager.play_sfx(`自行輸入的SFX名稱`)
 
 #我發現音效只會在那個場景起作用，怎麼設定通用的 UI 音效？
-建造一個專門的場景，例如 GlobalSoundBank.tscn，放一個 SoundBank，登記這些通用音效。
+如果有大量音效想要分別控管，可以建造一個專門的場景，例如 GlobalSoundBank.tscn，放一個 SoundBank，登記這些通用音效。
 
 Project
 ↓
 Project Settings
 ↓
 Globals把這個場景設為 Autoload
+
+更快速的方法是，在AudioManager.tscn本身，掛載SoundBank，裡面已經提供一個SoundBank_Global可以自由使用。
+（SoundBankGD是用來掛載腳本用的，不建議用來放置音效。）
 
 #注意事項
 Sfx / Bgm 是不同欄位，注意不要填錯位置了。
