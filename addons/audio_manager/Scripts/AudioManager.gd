@@ -8,6 +8,7 @@ const SFX_BUS := "SFX"
 const SFX_POOL_SIZE := 8          # 音效池大小,可依專案調整
 const DEFAULT_FADE_TIME := 1.0    # BGM 淡入淡出秒數
 const SFX_COOLDOWN_TIME := 0.05   # 同一個音效,間隔小於這個秒數就忽略,避免爆音
+const SILENT_DB := -80.0
 
 # =========================================================
 # 音效名稱查找表(由 SoundBank 節點註冊進來)
@@ -19,9 +20,10 @@ var _sfx_lookup: Dictionary = {}
 # BGM 雙軌交叉淡化
 # =========================================================
 var _bgm_players: Array[AudioStreamPlayer] = []
+var _bgm_fade_factor: Array[float] = [0.0, 0.0]  # 每個 player 各自的淡入淡出係數(0~1)
+var _bgm_tweens: Array[Tween] = [null, null]     # 每個 player 各自獨立的 tween,互不干擾
 var _active_bgm_index := 0
 var _current_bgm_name: String = ""
-var _bgm_tween: Tween
 
 # =========================================================
 # SFX 音效池
@@ -43,7 +45,7 @@ func _ready() -> void:
 	for i in range(2):
 		var p := AudioStreamPlayer.new()
 		p.bus = BGM_BUS
-		p.volume_db = -80.0  # 一開始靜音
+		p.volume_db = SILENT_DB  # 一開始靜音
 		add_child(p)
 		_bgm_players.append(p)
 
@@ -83,38 +85,24 @@ func play_bgm(track_name: String, fade_time: float = DEFAULT_FADE_TIME) -> void:
 	var track: AudioStream = _bgm_lookup[track_name]
 	_current_bgm_name = track_name
 
-	var old_player := _bgm_players[_active_bgm_index]
+	var old_index := _active_bgm_index
 	var new_index := 1 - _active_bgm_index
 	var new_player := _bgm_players[new_index]
 
 	new_player.stream = track
-	new_player.volume_db = -80.0
+	_set_bgm_fade_factor(new_index, 0.0)
 	new_player.play()
 
-	if _bgm_tween:
-		_bgm_tween.kill()
-	_bgm_tween = create_tween()
-	_bgm_tween.set_parallel(true)
-
-	# 舊的淡出
-	if old_player.playing:
-		_bgm_tween.tween_property(old_player, "volume_db", -80.0, fade_time)
-	# 新的淡入到目前設定音量
-	var target_db := linear_to_db(bgm_volume) if not muted else -80.0
-	_bgm_tween.tween_property(new_player, "volume_db", target_db, fade_time)
-
-	_bgm_tween.chain().tween_callback(old_player.stop)
+	_fade_bgm_player(old_index, 0.0, fade_time, true)   # 舊的淡出,淡完就停止
+	_fade_bgm_player(new_index, 1.0, fade_time, false)  # 新的淡入到目前音量
 
 	_active_bgm_index = new_index
 
 
 ## 停止目前 BGM(淡出)
 func stop_bgm(fade_time: float = DEFAULT_FADE_TIME) -> void:
-	var player := _bgm_players[_active_bgm_index]
 	_current_bgm_name = ""
-	var tween := create_tween()
-	tween.tween_property(player, "volume_db", -80.0, fade_time)
-	tween.tween_callback(player.stop)
+	_fade_bgm_player(_active_bgm_index, 0.0, fade_time, true)
 
 
 # =========================================================
@@ -153,15 +141,16 @@ func play_sfx(sound_name: String, volume_offset_db: float = 0.0) -> void:
 
 func set_bgm_volume(value: float) -> void:
 	bgm_volume = clamp(value, 0.0, 1.0)
-	if not muted:
-		var player := _bgm_players[_active_bgm_index]
-		player.volume_db = linear_to_db(bgm_volume)
+	for i in range(_bgm_players.size()):
+		_apply_bgm_volume(i)
 
 
 func set_sfx_volume(value: float) -> void:
 	sfx_volume = clamp(value, 0.0, 1.0)
 
 
+## 靜音只透過 bus mute 處理,跟 volume_db 的數值運算完全脫鉤,
+## 這樣取消靜音時不需要額外還原任何音量數值
 func set_muted(value: bool) -> void:
 	muted = value
 	var bus_idx_bgm := AudioServer.get_bus_index(BGM_BUS)
@@ -171,7 +160,40 @@ func set_muted(value: bool) -> void:
 
 
 # =========================================================
-# 內部工具
+# 內部工具:BGM 淡化
+# =========================================================
+
+## 讓某個 BGM player 的淡化係數(0~1)從目前值動畫到 target_factor。
+## 每個 player 有自己獨立的 tween,kill 舊的不會影響另一個 player。
+func _fade_bgm_player(player_index: int, target_factor: float, fade_time: float, stop_when_done: bool) -> void:
+	if _bgm_tweens[player_index]:
+		_bgm_tweens[player_index].kill()
+
+	var tween := create_tween()
+	_bgm_tweens[player_index] = tween
+	tween.tween_method(
+		_set_bgm_fade_factor.bind(player_index),
+		_bgm_fade_factor[player_index],
+		target_factor,
+		fade_time
+	)
+	if stop_when_done:
+		tween.tween_callback(_bgm_players[player_index].stop)
+
+
+func _set_bgm_fade_factor(player_index: int, factor: float) -> void:
+	_bgm_fade_factor[player_index] = factor
+	_apply_bgm_volume(player_index)
+
+
+## 唯一負責寫入 volume_db 的地方:使用者音量 * 淡化係數
+func _apply_bgm_volume(player_index: int) -> void:
+	var linear := bgm_volume * _bgm_fade_factor[player_index]
+	_bgm_players[player_index].volume_db = linear_to_db(linear) if linear > 0.0 else SILENT_DB
+
+
+# =========================================================
+# 內部工具:SFX
 # =========================================================
 
 ## 從音效池挑一個「沒在播放」的 player;
