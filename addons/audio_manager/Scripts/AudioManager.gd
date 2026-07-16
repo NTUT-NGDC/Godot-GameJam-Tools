@@ -61,11 +61,17 @@ func _ready() -> void:
 # 註冊音效(給 SoundBank 節點呼叫,不需要手動使用)
 # =========================================================
 
+## 登記表是全專案共用的全域命名空間,不會因場景卸載而清除,
+## 請確保 Sound Name 在整個專案裡是唯一的。
 func register_bgm(sound_name: String, stream: AudioStream) -> void:
+	if _bgm_lookup.has(sound_name) and _bgm_lookup[sound_name] != stream:
+		push_warning("[AudioManager] BGM名稱 '" + sound_name + "' 被重複註冊成不同的音檔,將會覆蓋原本的登記")
 	_bgm_lookup[sound_name] = stream
 
 
 func register_sfx(sound_name: String, stream: AudioStream) -> void:
+	if _sfx_lookup.has(sound_name) and _sfx_lookup[sound_name] != stream:
+		push_warning("[AudioManager] SFX名稱 '" + sound_name + "' 被重複註冊成不同的音檔,將會覆蓋原本的登記")
 	_sfx_lookup[sound_name] = stream
 
 

@@ -5,22 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_7ovkf"]
 [ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_8cn4j"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_76wlk"]
-[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="6_50i77"]
-[ext_resource type="Script" uid="uid://636kc80aamku" path="res://addons/audio_manager/Scripts/SoundEntry.gd" id="7_0wca2"]
-[ext_resource type="AudioStream" uid="uid://bbf6o7l2ui33g" path="res://addons/audio_manager/Tests/Resources/Your Body Betrays Your Degeneracy.mp3" id="8_wf2y4"]
-[ext_resource type="AudioStream" uid="uid://dnx2sxoffvack" path="res://addons/audio_manager/Tests/Resources/Retro Blop 22.wav" id="9_reart"]
-
-[sub_resource type="Resource" id="Resource_qtbbn"]
-script = ExtResource("7_0wca2")
-sound_name = "BGM2"
-stream = ExtResource("8_wf2y4")
-metadata/_custom_type_script = "uid://636kc80aamku"
-
-[sub_resource type="Resource" id="Resource_dab0x"]
-script = ExtResource("7_0wca2")
-sound_name = "SFX1"
-stream = ExtResource("9_reart")
-metadata/_custom_type_script = "uid://636kc80aamku"
 
 [node name="AudioTest2" type="Control" unique_id=273768765]
 layout_mode = 3
@@ -87,12 +71,5 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_top = 176.0
 offset_bottom = 176.0
-
-[node name="SoundBank" type="Node" parent="." unique_id=1633712891]
-script = ExtResource("6_50i77")
-bgm_entries = Array[ExtResource("7_0wca2")]([SubResource("Resource_qtbbn")])
-sfx_entries = Array[ExtResource("7_0wca2")]([SubResource("Resource_dab0x")])
-auto_play_bgm = "BGM2"
-metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
 
 [connection signal="pressed" from="change_bgm" to="." method="_on_button_pressed"]
