@@ -24,18 +24,11 @@ buses/default_bus_layout="uid://t6b87a32x0of"
 AudioManager="*uid://c4sdrsf6wcu5l"
 SaveManager="*uid://b6rc5ivewuay1"
 GameSession="*uid://cuh7os8yuuto3"
+SceneManager="*uid://bfw4jkxr72cty"
 
 [display]
 
 window/stretch/mode="canvas_items"
-
-[input]
-
-damage_test={
-"deadzone": 0.2,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":66,"key_label":0,"unicode":98,"location":0,"echo":false,"script":null)
-]
-}
 
 [input]
 

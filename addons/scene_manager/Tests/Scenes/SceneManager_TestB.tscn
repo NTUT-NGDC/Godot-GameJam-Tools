@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmv7xq2hwtnfk"]
+
+[ext_resource type="Script" uid="uid://d5xqmv92kfhtc" path="res://addons/scene_manager/Tests/Scripts/SceneManager_TestB.gd" id="1_testb"]
+
+[node name="SceneManager_TestB" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_testb")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.298, 0.169, 0.145, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Scene B"
+
+[node name="GoToAButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "返回場景 A"
+
+[node name="GoToAByIndexButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "返回場景 A(用索引 change_scene_by_index(0))"
+
+[node name="GoToAWithLoadingButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "返回場景 A(顯示 Loading 畫面)"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GoToAButton" to="." method="_on_go_to_a_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GoToAByIndexButton" to="." method="_on_go_to_a_by_index_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GoToAWithLoadingButton" to="." method="_on_go_to_a_with_loading_pressed"]
