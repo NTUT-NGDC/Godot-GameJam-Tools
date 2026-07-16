@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://qwphif7ey8ry"]
+
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_ay4lh"]
+[ext_resource type="Script" uid="uid://b3o3c82nc0qwq" path="res://addons/ui_kit/Scripts/button_quit.gd" id="1_q8htl"]
+
+[node name="Button_QUIT" type="Control" unique_id=128373212]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q8htl")
+
+[node name="Button_QUIT" type="Button" parent="." unique_id=175398936]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ay4lh")
+theme_override_colors/font_pressed_color = Color(0.84624463, 0.5535003, 0.4987226, 1)
+text = "離開遊戲"
+flat = true
+
+[connection signal="pressed" from="Button_QUIT" to="." method="_on_button_quit_pressed"]

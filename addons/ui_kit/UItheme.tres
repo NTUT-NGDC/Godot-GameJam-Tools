@@ -1,0 +1,8 @@
+[gd_resource type="Theme" format=3 uid="uid://bh8il2tdbvjad"]
+
+[ext_resource type="FontFile" uid="uid://d3o02ccv0iinj" path="res://addons/ui_kit/Fonts/jf-openhuninn-2.1.ttf" id="1_iwq3t"]
+
+[resource]
+default_font = ExtResource("1_iwq3t")
+default_font_size = 14
+Button/font_sizes/font_size = 32
