@@ -11,8 +11,14 @@ config_version=5
 [application]
 
 config/name="godot-gamejam-tools"
+run/main_scene="uid://dyuej8uh8uukq"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SaveManager="*uid://b6rc5ivewuay1"
+GameSession="*uid://cuh7os8yuuto3"
 
 [display]
 
