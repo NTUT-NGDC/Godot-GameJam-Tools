@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bo04ibv18ggb8"]
 
 [ext_resource type="Script" uid="uid://dvhdt8cnbis1c" path="res://addons/audio_manager/Tests/audio_test_2.gd" id="1_u61q7"]
-[ext_resource type="PackedScene" uid="uid://dcte0o6505wxs" path="res://addons/audio_manager/Sences/BGMVolumeSlider.tscn" id="2_fv6jm"]
+[ext_resource type="PackedScene" path="res://addons/audio_manager/Sences/VolumeSliders.tscn" id="2_fv6jm"]
 [ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_7ovkf"]
 [ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_8cn4j"]
 [ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_76wlk"]
@@ -15,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_u61q7")
 
-[node name="BgmVolumeSlider" parent="." unique_id=1265191236 instance=ExtResource("2_fv6jm")]
+[node name="VolumeSliders" parent="." unique_id=1265191236 instance=ExtResource("2_fv6jm")]
 layout_mode = 1
 
 [node name="change_bgm" type="Button" parent="." unique_id=694211514]

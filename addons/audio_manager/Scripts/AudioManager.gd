@@ -3,6 +3,7 @@ extends Node
 # =========================================================
 # 設定
 # =========================================================
+const MASTER_BUS := "Master"
 const BGM_BUS := "BGM"
 const SFX_BUS := "SFX"
 const SFX_POOL_SIZE := 8          # 音效池大小,可依專案調整
@@ -35,6 +36,7 @@ var _sfx_last_played_time: Dictionary = {}  # key: AudioStream, value: 上次播
 # =========================================================
 # 音量 / 靜音狀態
 # =========================================================
+var master_volume: float = 1.0 : set = set_master_volume
 var bgm_volume: float = 1.0 : set = set_bgm_volume
 var sfx_volume: float = 1.0 : set = set_sfx_volume
 var muted: bool = false : set = set_muted
@@ -144,6 +146,13 @@ func play_sfx(sound_name: String, volume_offset_db: float = 0.0) -> void:
 # =========================================================
 # 音量 / 靜音控制
 # =========================================================
+
+## 總音量直接控制 Master bus,BGM/SFX 都會送進 Master,不需要額外跟其他音量相乘
+func set_master_volume(value: float) -> void:
+	master_volume = clamp(value, 0.0, 1.0)
+	var bus_idx := AudioServer.get_bus_index(MASTER_BUS)
+	AudioServer.set_bus_volume_db(bus_idx, linear_to_db(master_volume) if master_volume > 0.0 else SILENT_DB)
+
 
 func set_bgm_volume(value: float) -> void:
 	bgm_volume = clamp(value, 0.0, 1.0)

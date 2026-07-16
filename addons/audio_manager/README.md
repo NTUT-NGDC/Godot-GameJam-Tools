@@ -64,11 +64,12 @@ Sound Name請取相異的代號，不要通通都取BGM01，可能會播不出�
 
 #其他功能
 
-[BGMVolumeSlider]
-雖然叫做BGM音量拉桿，但裡面可以控制全部BGM/SFX的音量，也可選擇分開控制。
-設置方式請看BGMVolumeSlider.tscn
+[VolumeSliders]
+裡面有三條拉桿：總音量、音樂、音效，分別控制 Master bus、BGM、SFX 的音量。
+設置方式請看VolumeSliders.tscn
 
-如果需要分別調整BGM/SFX的音量，請用
+如果需要用程式碼分別調整音量，請用
+	AudioManager.set_master_volume(value)
 	AudioManager.set_bgm_volume(value)
 	AudioManager.set_sfx_volume(value)
 	
