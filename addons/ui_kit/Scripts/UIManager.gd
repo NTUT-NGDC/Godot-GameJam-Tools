@@ -2,13 +2,18 @@ extends Node
 
 ###以下皆為暫停選單相關###
 
+#請在編輯器中把玩家節點拖進來，玩家節點需要有player_died signal
+@export var player_path: NodePath
+
 #onready是電腦載入順序，等到PauseMenu載入好了，才能使用。
 @onready var pause_menu = $Canvas/PauseMenu
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	#連接玩家死亡事件
-	var player = $"../UI_testbot"
+	if player_path.is_empty():
+		return
+	var player = get_node(player_path)
 	player.player_died.connect(show_death_menu)
 
 #ui_cancel是內建的ESC離開按鍵綁定

@@ -12,14 +12,16 @@
 
 死亡選單＝DeathMenu
 功能：腳色血量歸零後，會間隔0.1秒後跳出，此項包含重來遊戲（重新開始當前場景）與離開遊戲的按鈕。
-需要搭配`UI_testbot`、`health_bar`、`Textures資料夾`使用，才能看見效果。
+需要在UI節點的player_path欄位，把玩家節點拖進去（玩家腳本需要有player_died signal），才能觸發死亡選單。
 
 [UI_testbot]
 UI測試用機器人，會不停在畫面中旋轉，且包含簡易的扣血設計。
+放在Tests資料夾（測試用，非正式功能腳本）。
+完整展示可參考Tests/UIKitDemo.tscn（開啟後用「執行目前場景」測試，專案本身的main_scene維持空白）。
 
 [HealthBar]
 血量條
-需要搭配`UI_testbot`、`Textures資料夾`使用，才能看見效果。
+需要在HealthBar節點的player_path欄位，把玩家節點拖進去（玩家腳本需要有hp屬性），才能顯示血量。
 
 [Textures資料夾]
 現階段包含血量條的三張圖片，資料夾內有附PSD檔案，可自由修改。
@@ -30,4 +32,6 @@ UI測試用機器人，會不停在畫面中旋轉，且包含簡易的扣血設
 
 [Button_Start]
 開始遊戲按鈕
-功能：適用於遊戲開場主選單，按下後即可進入遊戲。`需要額外手動設定，搭配已有場景轉換，可看button_start.gd`
+功能：適用於遊戲開場主選單，按下後即可進入遊戲。
+需要在Button_Start節點的target_scene欄位，把想要的遊戲主場景拖進去。
+若target_scene留空，按下去會改成重新載入目前場景（例如Tests/UIKitDemo.tscn就是用這個預設行為）。
