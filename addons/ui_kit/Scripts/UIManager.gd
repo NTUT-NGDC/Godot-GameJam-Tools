@@ -20,8 +20,12 @@ func _process(delta):
 #.paused是bool值，只有true/false
 #!是使其相反，只能用在bool值
 func toggle_pause():
+	#死亡選單顯示時，忽略ESC，避免在死亡畫面下把遊戲解除暫停
+	if death_menu.visible:
+		return
+
 	get_tree().paused = !get_tree().paused
-	
+
 	pause_menu.visible = get_tree().paused
 	
 ###以上皆為暫停選單相關###

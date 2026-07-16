@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b1ym46r8k5wvt"]
 
-[ext_resource type="Script" uid="uid://c3bsvtxw7u45x" path="res://addons/ui_kit/scripts/button_start.gd" id="1_i68lg"]
+[ext_resource type="Script" uid="uid://c3bsvtxw7u45x" path="res://addons/ui_kit/Scripts/button_start.gd" id="1_i68lg"]
 [ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_pggis"]
 
 [node name="Button_Start" type="Control" unique_id=2130497237]

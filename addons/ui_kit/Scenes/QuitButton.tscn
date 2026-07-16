@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://qwphif7ey8ry"]
 
 [ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_ay4lh"]
-[ext_resource type="Script" uid="uid://b3o3c82nc0qwq" path="res://addons/ui_kit/scripts/button_quit.gd" id="1_q8htl"]
+[ext_resource type="Script" uid="uid://b3o3c82nc0qwq" path="res://addons/ui_kit/Scripts/button_quit.gd" id="1_q8htl"]
 
 [node name="Button_QUIT" type="Control" unique_id=128373212]
 layout_mode = 3

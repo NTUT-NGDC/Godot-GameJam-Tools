@@ -3,7 +3,6 @@
 
 #功能說明 
 拖入Scenes的相應tscn，以及其附加的Scripts即可使用。
-`無論使用哪個功能，都需要一併放入Scenes/ui_manager.tscn`
 
 [UI.tscn]
 內含暫停選單PauseMenu/死亡選單DeathMenu
