@@ -56,7 +56,6 @@ Project Settings
 Globals把這個場景設為 Autoload
 
 更快速的方法是，在AudioManager.tscn本身，掛載SoundBank，裡面已經提供一個SoundBank_Global可以自由使用。
-（SoundBankGD是用來掛載腳本用的，不建議用來放置音效。）
 
 #注意事項
 Sfx / Bgm 是不同欄位，注意不要填錯位置了。

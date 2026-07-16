@@ -6,9 +6,6 @@
 [node name="AudioManager" type="Node" unique_id=1656435037]
 script = ExtResource("1_ltsqv")
 
-[node name="SoundBankGD" type="Node" parent="." unique_id=1837034789]
-script = ExtResource("2_x6qat")
-
 [node name="SoundBank_Global" type="Node" parent="." unique_id=984916596]
 script = ExtResource("2_x6qat")
 metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
