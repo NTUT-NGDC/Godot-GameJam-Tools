@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://snamo70qbd2g"]
+
+[ext_resource type="Script" uid="uid://csh7w8e0i52or" path="res://addons/audio_manager/Tests/audio_test.gd" id="1_rv24g"]
+[ext_resource type="PackedScene" path="res://addons/audio_manager/Sences/VolumeSliders.tscn" id="2_e1cm4"]
+[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_venog"]
+[ext_resource type="Script" uid="uid://bqyejsebtnaqn" path="res://addons/audio_manager/Scripts/SFXOnButtonPress.gd" id="4_tb2m2"]
+[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="5_nkaxg"]
+
+[node name="AudioTest" type="Control" unique_id=273768765]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rv24g")
+
+[node name="VolumeSliders" parent="." unique_id=1265191236 instance=ExtResource("2_e1cm4")]
+layout_mode = 1
+
+[node name="change_bgm" type="Button" parent="." unique_id=1082408514]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.0
+offset_top = -24.0
+offset_right = 203.0
+offset_bottom = 112.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "切換成第二首BGM"
+icon = ExtResource("3_venog")
+
+[node name="SFXOnButtonPress" type="Node" parent="change_bgm" unique_id=392856434]
+script = ExtResource("4_tb2m2")
+sfx_name = "SFX1"
+metadata/_custom_type_script = "uid://bqyejsebtnaqn"
+
+[node name="PLAY_SFX" type="Button" parent="." unique_id=290984113]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.0
+offset_top = -204.0
+offset_right = 203.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "播放音效"
+icon = ExtResource("3_venog")
+
+[node name="SFXOnButtonPress" type="Node" parent="PLAY_SFX" unique_id=2039211039]
+script = ExtResource("4_tb2m2")
+sfx_name = "SFX1"
+metadata/_custom_type_script = "uid://bqyejsebtnaqn"
+
+[node name="Mute" parent="." unique_id=1999784504 instance=ExtResource("5_nkaxg")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = 176.0
+offset_bottom = 176.0
+
+[connection signal="pressed" from="change_bgm" to="." method="_on_change_bgm_pressed"]

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://c4sdrsf6wcu5l"]
+
+[ext_resource type="Script" uid="uid://ccy215p5nyfm6" path="res://addons/audio_manager/Scripts/AudioManager.gd" id="1_ltsqv"]
+[ext_resource type="Script" uid="uid://b8lxhxf13eyi1" path="res://addons/audio_manager/Scripts/SoundBank.gd" id="2_x6qat"]
+
+[node name="AudioManager" type="Node" unique_id=1656435037]
+script = ExtResource("1_ltsqv")
+
+[node name="SoundBank_Global" type="Node" parent="." unique_id=984916596]
+script = ExtResource("2_x6qat")
+metadata/_custom_type_script = "uid://b8lxhxf13eyi1"
