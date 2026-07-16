@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxr8tq4mvnhwc"]
+
+[ext_resource type="Script" uid="uid://c8mvxq3d5wtha" path="res://addons/scene_manager/Tests/Scripts/SceneManager_TestA.gd" id="1_testa"]
+
+[node name="SceneManager_TestA" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_testa")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.145, 0.204, 0.298, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Scene A"
+
+[node name="GoToBButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "前往場景 B"
+
+[node name="GoToBByIndexButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "前往場景 B(用索引 change_scene_by_index(1))"
+
+[node name="SpamButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "連續快速觸發測試(應只切換一次)"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GoToBButton" to="." method="_on_go_to_b_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GoToBByIndexButton" to="." method="_on_go_to_b_by_index_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/SpamButton" to="." method="_on_spam_pressed"]
