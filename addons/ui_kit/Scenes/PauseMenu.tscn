@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="1_63xnr"]
 [ext_resource type="Script" uid="uid://n6vv3q0170i0" path="res://addons/ui_kit/Scripts/pause_menu.gd" id="1_rvj63"]
+[ext_resource type="PackedScene" uid="uid://dud1huehye8wu" path="res://addons/audio_manager/Sences/VolumeSliders.tscn" id="2_vol"]
 
 [node name="PauseMenu" type="Control" unique_id=62765627]
 layout_mode = 3
@@ -59,6 +60,10 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 theme = ExtResource("1_63xnr")
 text = "離開遊戲"
+
+[node name="VolumeSliders" parent="Panel/VBoxContainer" instance=ExtResource("2_vol")]
+layout_mode = 2
+custom_minimum_size = Vector2(260, 120)
 
 [connection signal="pressed" from="Panel/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

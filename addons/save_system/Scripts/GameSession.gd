@@ -47,7 +47,7 @@ func continue_game() -> bool:
 ## 從遊戲畫面手動存檔並返回主選單
 func save_and_return_to_menu() -> void:
 	SaveManager.save(game_data)
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	get_tree().change_scene_to_file("res://addons/demo/Scenes/title_scene.tscn")
 
 
 ## 離開遊戲的唯一入口：不管是按「離開遊戲」按鈕，

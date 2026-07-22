@@ -16,14 +16,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_d5spl")
 
-[node name="Label" type="Label" parent="." unique_id=1004354557]
-layout_mode = 0
-offset_left = -53.0
-offset_top = 19.0
-offset_right = 49.0
-offset_bottom = 42.0
-text = "按[B]模擬扣血"
-
 [node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1637699300]
 layout_mode = 1
 anchors_preset = 8

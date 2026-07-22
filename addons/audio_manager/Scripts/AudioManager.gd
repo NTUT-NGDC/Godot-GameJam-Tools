@@ -41,8 +41,22 @@ var bgm_volume: float = 1.0 : set = set_bgm_volume
 var sfx_volume: float = 1.0 : set = set_sfx_volume
 var muted: bool = false : set = set_muted
 
+# =========================================================
+# 音量設定持久化
+# =========================================================
+## AudioManager 自己讀寫這個檔案,不透過 SaveManager——
+## 音量/靜音是「應用程式設定」,跟哪一個遊戲存檔無關(不會因為開新遊戲而被重置),
+## 也讓 audio_manager 這個 addon 可以單獨使用,不用依賴 save_system。
+const SETTINGS_PATH := "user://audio_settings.json"
+
+var _settings_loaded := false  # 讀檔完成前,setter 觸發的存檔先不處理,避免把預設值寫回去蓋掉設定檔
+
 
 func _ready() -> void:
+	# 音樂/音效不該因為遊戲暫停(get_tree().paused = true)而跟著停掉,
+	# 例如按 ESC 開暫停選單時 BGM 應該繼續播放。
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	# 建立兩個 BGM 播放器,互相交叉淡化用
 	for i in range(2):
 		var p := AudioStreamPlayer.new()
@@ -57,6 +71,46 @@ func _ready() -> void:
 		p.bus = SFX_BUS
 		add_child(p)
 		_sfx_pool.append(p)
+
+	_load_settings()
+
+
+func _load_settings() -> void:
+	if FileAccess.file_exists(SETTINGS_PATH):
+		var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+		if file == null:
+			push_error("[AudioManager] 無法開啟音量設定檔讀取 -> %s" % SETTINGS_PATH)
+		else:
+			var parsed = JSON.parse_string(file.get_as_text())
+			file.close()
+			if typeof(parsed) == TYPE_DICTIONARY:
+				set_master_volume(parsed.get("master_volume", master_volume))
+				set_bgm_volume(parsed.get("bgm_volume", bgm_volume))
+				set_sfx_volume(parsed.get("sfx_volume", sfx_volume))
+				set_muted(parsed.get("muted", muted))
+			else:
+				push_error("[AudioManager] 音量設定檔內容格式錯誤或已損毀 -> %s" % SETTINGS_PATH)
+
+	_settings_loaded = true
+
+
+## 音量/靜音一變動就立即寫檔(內容只有四個欄位,寫檔很輕量,不需要額外做去抖動)
+func _save_settings() -> void:
+	if not _settings_loaded:
+		return
+
+	var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
+	if file == null:
+		push_error("[AudioManager] 無法開啟音量設定檔寫入 -> %s (錯誤碼: %s)" % [SETTINGS_PATH, FileAccess.get_open_error()])
+		return
+
+	file.store_string(JSON.stringify({
+		"master_volume": master_volume,
+		"bgm_volume": bgm_volume,
+		"sfx_volume": sfx_volume,
+		"muted": muted,
+	}))
+	file.close()
 
 
 # =========================================================
@@ -152,16 +206,19 @@ func set_master_volume(value: float) -> void:
 	master_volume = clamp(value, 0.0, 1.0)
 	var bus_idx := AudioServer.get_bus_index(MASTER_BUS)
 	AudioServer.set_bus_volume_db(bus_idx, linear_to_db(master_volume) if master_volume > 0.0 else SILENT_DB)
+	_save_settings()
 
 
 func set_bgm_volume(value: float) -> void:
 	bgm_volume = clamp(value, 0.0, 1.0)
 	for i in range(_bgm_players.size()):
 		_apply_bgm_volume(i)
+	_save_settings()
 
 
 func set_sfx_volume(value: float) -> void:
 	sfx_volume = clamp(value, 0.0, 1.0)
+	_save_settings()
 
 
 ## 靜音只透過 bus mute 處理,跟 volume_db 的數值運算完全脫鉤,
@@ -172,6 +229,7 @@ func set_muted(value: bool) -> void:
 	var bus_idx_sfx := AudioServer.get_bus_index(SFX_BUS)
 	AudioServer.set_bus_mute(bus_idx_bgm, muted)
 	AudioServer.set_bus_mute(bus_idx_sfx, muted)
+	_save_settings()
 
 
 # =========================================================

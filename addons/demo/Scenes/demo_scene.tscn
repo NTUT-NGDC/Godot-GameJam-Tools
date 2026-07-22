@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://dyuej8uh8uukq"]
+
+[ext_resource type="Script" uid="uid://inmsxj2m5i5v" path="res://addons/demo/Scripts/demo_scene.gd" id="1_les6o"]
+[ext_resource type="Script" uid="uid://db3xkdea850u2" path="res://addons/demo/Scripts/demo_player.gd" id="2_2jtk7"]
+[ext_resource type="Texture2D" uid="uid://ba1iomawl2esd" path="res://icon.svg" id="3_wcsrw"]
+[ext_resource type="PackedScene" uid="uid://cm0iw228xe6qp" path="res://addons/ui_kit/Scenes/UI.tscn" id="4_0met7"]
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="5_k43th"]
+[ext_resource type="PackedScene" uid="uid://cxaioh4c5c15h" path="res://addons/ui_kit/Scenes/HealthBar.tscn" id="6_ipq8d"]
+
+[node name="DemoScene" type="Node2D" unique_id=796875137]
+script = ExtResource("1_les6o")
+
+[node name="DemoPlayer" type="Node2D" parent="." unique_id=796875201]
+script = ExtResource("2_2jtk7")
+
+[node name="Icon" type="Sprite2D" parent="DemoPlayer" unique_id=796875202]
+texture = ExtResource("3_wcsrw")
+
+[node name="UI" parent="." unique_id=796875210 instance=ExtResource("4_0met7")]
+player_path = NodePath("../DemoPlayer")
+
+[node name="Canvas" type="CanvasLayer" parent="." unique_id=796875260]
+layer = 0
+
+[node name="TopBar" type="HBoxContainer" parent="Canvas" unique_id=796875220]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 31.0
+offset_right = -24.0
+offset_bottom = 79.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="StatsLabel" type="Label" parent="Canvas/TopBar" unique_id=796875221]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("5_k43th")
+text = "血量：10"
+vertical_alignment = 1
+
+[node name="HealthBar" parent="Canvas" unique_id=796875240 instance=ExtResource("6_ipq8d")]
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 36.0
+offset_top = 8.0
+offset_right = 236.0
+offset_bottom = 48.0
+grow_horizontal = 1
+grow_vertical = 1
+player_path = NodePath("../../DemoPlayer")
+
+[node name="HintLabel" type="Label" parent="Canvas" unique_id=796875250]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -60.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme = ExtResource("5_k43th")
+text = "ESC 暫停／按 B 扣血／血量歸零觸發死亡選單"
+horizontal_alignment = 1

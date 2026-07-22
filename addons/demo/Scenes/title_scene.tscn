@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://cftyfk2etlm13"]
+
+[ext_resource type="Script" uid="uid://f0tb7uiqot4p" path="res://addons/demo/Scripts/title_scene.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://dud1huehye8wu" path="res://addons/audio_manager/Sences/VolumeSliders.tscn" id="3_vol"]
+[ext_resource type="PackedScene" uid="uid://c2o5fde5ngl2x" path="res://addons/audio_manager/Sences/Mute.tscn" id="4_mute"]
+[ext_resource type="Theme" uid="uid://bh8il2tdbvjad" path="res://addons/ui_kit/UItheme.tres" id="5_theme"]
+
+[node name="TitleScene" type="Control" unique_id=310045821]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=310045822]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=310045823]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=310045824]
+layout_mode = 2
+theme = ExtResource("5_theme")
+theme_override_font_sizes/font_size = 80
+text = "Godot GameJam Tools"
+horizontal_alignment = 1
+
+[node name="NewGameButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=310045825]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_theme")
+text = "開始新遊戲"
+
+[node name="ContinueButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=310045826]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_theme")
+text = "繼續遊戲"
+
+[node name="OptionsButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1113659732]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_theme")
+text = "選項"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1045831407]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_theme")
+text = "離開遊戲"
+
+[node name="OptionsPanel" type="Control" parent="." unique_id=678880801]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BlackPanel" type="ColorRect" parent="OptionsPanel" unique_id=678880802]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="Panel" type="Panel" parent="OptionsPanel" unique_id=678880803]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -170.0
+offset_right = 170.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OptionsPanel/Panel" unique_id=678880804]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="OptionsTitleLabel" type="Label" parent="OptionsPanel/Panel/VBoxContainer" unique_id=678880805]
+layout_mode = 2
+theme = ExtResource("5_theme")
+theme_override_font_sizes/font_size = 48
+text = "選項"
+horizontal_alignment = 1
+
+[node name="VolumeSliders" parent="OptionsPanel/Panel/VBoxContainer" unique_id=678880806 instance=ExtResource("3_vol")]
+custom_minimum_size = Vector2(280, 120)
+layout_mode = 2
+
+[node name="Mute" parent="OptionsPanel/Panel/VBoxContainer" unique_id=678880807 instance=ExtResource("4_mute")]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CloseButton" type="Button" parent="OptionsPanel/Panel/VBoxContainer" unique_id=678880808]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_theme")
+text = "關閉"
