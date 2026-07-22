@@ -1,67 +1,40 @@
 # NGDC Game Jam 通用工具庫
 
-用來累積社團各屆共用的 Godot 工具（存檔、UI、場景切換等），
-歡迎自由參與開發，一起把社團的技術資產養大 💪
+社團各屆 Game Jam 共用的 Godot 工具箱，把「存讀檔」「場景切換」「音效/BGM」「常用 UI（血條、暫停/死亡選單、開始/離開按鈕）」這些每次組隊都要重寫的東西直接包好，Jam 開場就能拿去用，把時間留給遊戲本身。
 
-## 🔧 開發環境
+## 🔧 需求環境
 
 - 引擎版本：**Godot 4.7 (stable)**
 - 下載連結：https://godotengine.org/download/archive/4.7-stable/
-- ⚠️ 請大家統一使用同一個版本，避免場景檔案版本不相容
+- ⚠️ 請使用同一個版本開啟，避免場景檔案版本不相容
 
-## 🚀 快速開始
+## 🚀 先看一次示範效果
 
-1. Clone 這個專案下來
-2. 用 Godot 4.7 開啟資料夾內的 project.godot
-3. 開啟 `demo/demo_scene.tscn` 可以看到目前所有工具的示範效果
-4. 想開發新工具？看下面「怎麼貢獻」章節
+1. Clone 這個專案（或直接下載 zip）
+2. 用 Godot 4.7 開啟資料夾內的 `project.godot`
+3. 按 F5 執行專案（或開啟 `addons/demo/Scenes/title_scene.tscn` 後按 F6）— 會進入整合了四個工具的主選單 → 遊戲畫面
+4. 想知道這個 demo 場景怎麼串起所有工具，看 [addons/demo/README.md](addons/demo/README.md)
 
-## 📁 專案結構
+## 📁 工具一覽
 
-```
-addons/
-├── audio_manager/     # 音效管理
-├── demo/                  # 整合示範場景
-├── save_system/       # 存檔系統
-├── scene_manager/     # 場景切換管理
-├── ui_kit/            # UI 元件庫
-```
+| 工具 | 說明 | 文件 |
+| --- | --- | --- |
+| `audio_manager` | BGM / 音效播放與音量控制 | [README](addons/audio_manager/README.md) |
+| `save_system` | 存讀檔、新遊戲/繼續遊戲/自動存檔 | [README](addons/save_system/README.md) |
+| `scene_manager` | 場景切換（淡入淡出、Loading 畫面） | [README](addons/scene_manager/README.md) |
+| `ui_kit` | 常用 UI 元件（血條、暫停/死亡選單、開始/離開按鈕） | [README](addons/ui_kit/README.md) |
+| `demo` | 整合以上四個工具的示範場景（主選單 + 遊戲畫面） | [README](addons/demo/README.md) |
 
-每個工具資料夾底下都有自己的 README，請說明怎麼用。
+## 📦 怎麼把工具用到自己的專案
 
-## 🤝 怎麼貢獻
+每個工具都是獨立的資料夾，不需要整包一起拿：
 
-1. 建立自己的分支：`git checkout -b feature/工具名稱`
-2. 開發完成後 push，並開 Pull Request 到 main
-3. 小改動可自行 merge；新增功能建議找人 review 一下
+1. 把需要的 `addons/工具名稱/` 資料夾複製到你自己的專案裡
+2. 照該工具 README 的「安裝 / 設定」步驟設定 Autoload（大部分工具都是單例，需要在 **專案設定 → Autoload** 加入）
+3. 依 README 的 API 說明呼叫即可
 
-不熟 Git？看這裡：[Git 教學影片連結](https://youtu.be/9HyXQdwecOM)
+工具之間也可以互相搭配（例如 `scene_manager` 切換場景時，讓 `save_system` 在切換前自動存檔），實際搭配範例可以參考 `demo` 場景怎麼寫。
 
-### PR 標題格式
+## 🤝 想一起開發這個工具庫？
 
-```
-[工具名稱] 做了什麼事
-```
-
-範例：
-- `[存檔系統] 新增基本存讀檔功能`
-- `[UI Kit] 新增按鈕與對話框元件`
-- `[場景管理] 修正切換時重複觸發的問題`
-
-### PR 描述請包含
-
-- **做了什麼**：簡單描述完成的功能
-- **怎麼測試**：說明如何確認功能正常運作
-- **需要注意的地方**：沒有就填「無」
-
-（開 PR 時 GitHub 會自動帶出範本，照著填就好）
-
-### 合併方式
-
-本 repo 統一使用 **Squash and merge**，PR 合併後 main 上只會留下一條乾淨的紀錄，不用擔心開發過程 commit 訊息寫得亂。
-
-> 因為 squash merge 會把 PR 標題變成 main 上的 commit 訊息，記得標題要照上面的格式寫清楚。
-
-## 📌 需求規格
-
-想知道每個工具該做到什麼程度？看這份文件：[工具需求規格連結](https://www.notion.so/3931803c84a480cc826de559676d9597?source=copy_link)
+貢獻流程、PR 規範、分支/合併方式都寫在 [CONTRIBUTING.md](CONTRIBUTING.md)。
