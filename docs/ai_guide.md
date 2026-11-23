@@ -49,7 +49,7 @@ game_config.tres   遊戲名稱、開始場景、Credits 名單
 | 標題畫面 | 開始遊戲／設定／製作名單／離開。遊戲名稱、開始場景讀 `game_config.tres` | `core/screens/title_screen.tscn`（專案主場景） |
 | 暫停選單 | **自動加進每個遊戲場景**，按 Esc 開關：繼續／重來／設定／回標題 | `core/screens/pause_menu.tscn` |
 | 設定 | 音樂、音效音量（會記住）、全螢幕 | `core/screens/settings_panel.tscn` |
-| 勝利／失敗畫面 | `GameFlow.win("訊息")`、`GameFlow.lose("訊息")`，會暫停遊戲、顯示再玩一次／回標題 | `core/screens/` |
+| 勝利／失敗畫面 | `GameFlow.win("訊息")`、`GameFlow.lose("訊息")`，會暫停遊戲、顯示再玩一次／回標題；「回標題」可以換成別的：`GameFlow.set_title_button("回編輯器", 要做的事)`、`GameFlow.reset_title_button()`；暫時不要暫停選單（藏起「選單」、Esc 沒反應）：`GameFlow.set_pause_enabled(false)`，換場景就恢復 | `core/screens/` |
 | 製作名單 | 名單寫在 `game_config.tres` 的 Credits（一行一個「職位：名字」） | `core/screens/credits_screen.tscn` |
 | 換場景（有轉場） | `SceneManager.change_scene("res://...")`、`SceneManager.reload()`。**不要直接用 `get_tree().change_scene_to_file()`** | `core/scene_manager/` |
 | BGM／音效 | 場景裡放 `SoundBank` 節點登記名字，`AudioManager.play_bgm("名字")`、`AudioManager.play_sfx("名字")` | `core/audio_manager/` |
@@ -57,7 +57,7 @@ game_config.tres   遊戲名稱、開始場景、Credits 名單
 | 分數 | `score_display.tscn` 拖進 CanvasLayer，`add(10)` 加分；group `score` | `core/hud/` |
 | 計時 | `timer_display.tscn`，正數或倒數，倒數到 0 發 `time_up`（可設定時間到就輸／贏） | `core/hud/` |
 | 血條 | `health_bar.tscn`，`damage(10)`、`heal(10)`，到 0 發 `died`（可設定死掉就輸） | `core/hud/` |
-| 鏡頭 | `follow_camera.tscn` 拖進關卡：跟隨玩家（group `player`）或固定位置；可設長方形邊界（大小、偏移），編輯器裡會畫框。**不要在角色身上另外放 Camera2D** | `core/camera/` |
+| 鏡頭 | `follow_camera.tscn` 拖進關卡：跟隨玩家（group `player`）或固定位置；可設長方形邊界（大小、偏移），編輯器裡會畫框。**不要在角色身上另外放 Camera2D**。策略、塔防用 `pan_camera.tscn`：WASD／方向鍵、滑鼠到邊緣、中鍵拖曳移動，滾輪縮放（可設要按 Ctrl），可設邊界（`set_limit_rect()`） | `core/camera/` |
 | 遊戲設定 | `GameConfig.current().game_name`、`.start_scene`、`.credits` | `game_config.tres` |
 
 ### 技術積木（`addons/`）

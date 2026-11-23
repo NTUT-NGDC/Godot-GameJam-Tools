@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://core/camera/scripts/pan_camera.gd" id="1_script"]
+
+[node name="PanCamera" type="Camera2D"]
+script = ExtResource("1_script")

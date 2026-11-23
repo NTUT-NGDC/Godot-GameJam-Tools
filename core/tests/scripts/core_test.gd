@@ -4,12 +4,13 @@ extends Node
 ## 2. 按鍵：每個常用動作都有設定
 ## 3. 畫面流程：標題（沒有暫停選單）→ 開始遊戲 → 主場景（有暫停選單）→ 暫停／繼續 → 贏 → 再玩一次 → 輸 → 回標題 → Credits
 ## 4. HUD：分數、計時、血條
-## 5. 鏡頭：跟隨、固定、邊界
+## 5. 鏡頭：跟隨、固定、邊界；可移動縮放的鏡頭（移動、縮放、邊界）
 ## 6. 音量、存讀檔
 ##
 ## 在命令列執行：
 ##   godot --headless --path . res://core/tests/core_test.tscn
 
+const ScriptErrors = preload("res://core/tests/scripts/script_error_counter.gd")
 const EXPECTED_ACTIONS: Array[String] = [
 	"move_up", "move_down", "move_left", "move_right", "run", "interact", "attack", "pause",
 	"skill_1", "skill_2", "skill_3", "mouse_left", "mouse_right",
@@ -18,8 +19,11 @@ const SCORE_SCENE: PackedScene = preload("res://core/hud/score_display.tscn")
 const TIMER_SCENE: PackedScene = preload("res://core/hud/timer_display.tscn")
 const HEALTH_SCENE: PackedScene = preload("res://core/hud/health_bar.tscn")
 const CAMERA_SCENE: PackedScene = preload("res://core/camera/follow_camera.tscn")
+const PAN_CAMERA_SCENE: PackedScene = preload("res://core/camera/pan_camera.tscn")
 
 var _failures: int = 0
+## 腳本錯誤也算失敗（會讓測試函式中斷、跑不到 _expect）
+var _script_errors: ScriptErrors = ScriptErrors.new()
 
 
 func _ready() -> void:
@@ -29,9 +33,11 @@ func _ready() -> void:
 	_test_actions()
 	await _test_hud()
 	await _test_camera()
+	await _test_pan_camera()
 	_test_audio_and_save()
 	await _test_flow()
 
+	_failures += _script_errors.report()
 	if _failures == 0:
 		print("[起手包測試] 全部 PASS")
 		get_tree().quit(0)
@@ -127,6 +133,43 @@ func _test_camera() -> void:
 	await _physics_frames(1)
 
 
+func _test_pan_camera() -> void:
+	print("--- 可移動縮放的鏡頭 ---")
+	var world: Node2D = Node2D.new()
+	add_child(world)
+	var camera: PanCamera = PAN_CAMERA_SCENE.instantiate()
+	camera.edge_scroll = false                                    # 測試時滑鼠位置不固定
+	camera.keyboard_pan = false
+	world.add_child(camera)
+	await _physics_frames(2)
+	_expect(camera.is_current(), "放進關卡：變成目前的鏡頭")
+	camera.move_by(Vector2(300, 0))
+	await _physics_frames(1)
+	_expect(camera.get_screen_center_position().is_equal_approx(Vector2(300, 0)), "移動：沒有邊界時自由移動（%s）" % camera.get_screen_center_position())
+	var center: Vector2 = camera.get_viewport_rect().size / 2.0
+	camera.zoom_by(2.0, center)
+	_expect(is_equal_approx(camera.zoom.x, 2.0), "縮放：放大兩倍")
+	camera.zoom_by(100.0, center)
+	_expect(is_equal_approx(camera.zoom.x, camera.max_zoom), "縮放：最多放大到 max_zoom")
+	camera.zoom = Vector2.ONE
+	camera.global_position = Vector2.ZERO
+	var before: Vector2 = camera.screen_to_world(Vector2(100, 100))
+	camera.zoom_by(2.0, Vector2(100, 100))
+	_expect(camera.screen_to_world(Vector2(100, 100)).distance_to(before) < 0.5, "縮放：滑鼠指的地方留在原位")
+
+	camera.zoom = Vector2.ONE
+	camera.set_limit_rect(Rect2(0, 0, 2560, 720))                 # 比畫面寬一倍、跟畫面一樣高
+	camera.global_position = Vector2(-5000, 999)
+	camera.clamp_to_limits()
+	_expect(camera.global_position.is_equal_approx(Vector2(640, 360)), "邊界：拉回框裡（%s）" % camera.global_position)
+	camera.move_by(Vector2(99999, 0))
+	_expect(camera.global_position.is_equal_approx(Vector2(1920, 360)), "邊界：最多移到右邊（%s）" % camera.global_position)
+	camera.zoom_by(0.01, center)
+	_expect(is_equal_approx(camera.zoom.x, 0.5) and camera.global_position.is_equal_approx(Vector2(1280, 360)), "邊界：最多縮小到整個框都放得進畫面、置中（%.2f）" % camera.zoom.x)
+	world.queue_free()
+	await _physics_frames(1)
+
+
 func _physics_frames(count: int) -> void:
 	for i: int in count:
 		await get_tree().physics_frame
@@ -181,12 +224,58 @@ func _test_flow() -> void:
 	await get_tree().process_frame
 	_expect(not GameFlow.is_finished() and not get_tree().paused, "再玩一次：重新載入、取消暫停、勝利畫面不見")
 
+	# 「回標題」換成別的（例如編輯器裡試玩時「回編輯器」）
+	var owner_node: Node = Node.new()
+	add_child(owner_node)
+	var pressed: Array[int] = [0]
+	GameFlow.set_title_button("回編輯器", func() -> void: pressed[0] += 1)
+	menu = _pause_menu()
+	menu.call("open_menu")
+	var title_button: Button = menu.get_node("%TitleButton")
+	_expect(title_button.text == "回編輯器", "換掉回標題：暫停選單的按鈕寫「回編輯器」")
+	title_button.pressed.emit()
+	await get_tree().process_frame
+	_expect(pressed[0] == 1 and get_tree().current_scene.scene_file_path == start and not get_tree().paused, "按下去：做換的事、不換場景、取消暫停")
+	GameFlow.win("換掉回標題")
+	await get_tree().process_frame
+	title_button = _result().get_node("%TitleButton")
+	_expect(title_button.text == "回編輯器", "勝敗畫面的按鈕也換掉")
+	title_button.pressed.emit()
+	await get_tree().process_frame
+	_expect(pressed[0] == 2 and not GameFlow.is_finished() and not get_tree().paused, "勝敗畫面按下去：做換的事、勝敗畫面關掉、取消暫停")
+	GameFlow.set_title_button("回編輯器", owner_node.queue_free)
+	owner_node.free()
+	_expect(GameFlow.title_button_text().is_empty(), "設定它的節點不見了：自動換回回標題")
+	GameFlow.set_title_button("回編輯器", func() -> void: pass)
+	GameFlow.reset_title_button()
+	menu.call("open_menu")
+	_expect((menu.get_node("%TitleButton") as Button).text == "回到標題", "reset_title_button()：換回原本的字（%s）" % (menu.get_node("%TitleButton") as Button).text)
+	menu.call("close_menu")
+
+	# 暫時關掉暫停選單（例如編輯器在編輯時）
+	var menu_button: Button = menu.get_node("%MenuButton")
+	var esc: InputEventAction = InputEventAction.new()
+	esc.action = "pause"
+	esc.pressed = true
+	menu.call("open_menu")
+	GameFlow.set_pause_enabled(false)
+	_expect(not menu_button.visible and not (menu.get_node("%MenuPanel") as Control).visible and not get_tree().paused, "set_pause_enabled(false)：選單按鈕藏起來，打開著的選單關掉")
+	menu.call("_unhandled_input", esc)
+	_expect(not get_tree().paused and not (menu.get_node("%MenuPanel") as Control).visible, "關掉時：按 Esc 不會打開")
+	GameFlow.set_pause_enabled(true)
+	_expect(menu_button.visible, "set_pause_enabled(true)：選單按鈕回來")
+	menu.call("_unhandled_input", esc)
+	_expect(get_tree().paused, "打開後：按 Esc 會打開")
+	menu.call("close_menu")
+	GameFlow.set_pause_enabled(false)
+
 	GameFlow.lose("測試失敗")
 	await get_tree().process_frame
 	_expect((_result().get_node("%ResultTitle") as Label).text.contains("失敗"), "GameFlow.lose()：顯示失敗畫面")
 	(_result().get_node("%TitleButton") as Button).pressed.emit()
 	await _wait_scene("TitleScreen")
 	_expect(get_tree().current_scene.name == "TitleScreen" and not get_tree().paused, "回到標題")
+	_expect(GameFlow.is_pause_enabled(), "換場景：關掉的暫停選單自動恢復")
 
 	(get_tree().current_scene.get_node("%CreditsButton") as Button).pressed.emit()
 	await _wait_scene("CreditsScreen")
@@ -206,14 +295,14 @@ func _wait_scene(scene_name: String, reloaded: bool = false) -> void:
 
 func _pause_menu() -> CanvasLayer:
 	for child: Node in GameFlow.get_children():
-		if child.name == "PauseMenu" and not child.is_queued_for_deletion():
+		if child.scene_file_path.ends_with("pause_menu.tscn") and not child.is_queued_for_deletion():
 			return child
 	return null
 
 
 func _result() -> Node:
 	for child: Node in GameFlow.get_children():
-		if child.name == "ResultScreen" and not child.is_queued_for_deletion():
+		if child.scene_file_path.ends_with("result_screen.tscn") and not child.is_queued_for_deletion():
 			return child
 	return null
 

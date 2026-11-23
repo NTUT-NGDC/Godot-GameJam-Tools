@@ -8,6 +8,7 @@ extends CanvasLayer
 @onready var _menu_button: Button = %MenuButton
 @onready var _menu_panel: Control = %MenuPanel
 @onready var _settings: Control = %SettingsPanel
+@onready var _title_text: String = (%TitleButton as Button).text
 
 
 func _ready() -> void:
@@ -20,10 +21,18 @@ func _ready() -> void:
 	(%SettingsButton as Button).pressed.connect(_settings.show)
 	(%TitleButton as Button).pressed.connect(_on_title_pressed)
 	_settings.connect("closed", _settings.hide)
+	refresh()
+
+
+## GameFlow.set_pause_enabled() 改了：關掉的話藏起「選單」按鈕（打開著就關掉）
+func refresh() -> void:
+	if not GameFlow.is_pause_enabled() and _menu_panel.visible:
+		close_menu()
+	_menu_button.visible = GameFlow.is_pause_enabled() and not _menu_panel.visible
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("pause") or GameFlow.is_finished():
+	if not event.is_action_pressed("pause") or GameFlow.is_finished() or not GameFlow.is_pause_enabled():
 		return
 	if _settings.visible:
 		_settings.hide()
@@ -36,6 +45,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## 打開選單，暫停遊戲
 func open_menu() -> void:
+	var title_text: String = GameFlow.title_button_text()          # 「回標題」可能被換成別的（GameFlow.set_title_button）
+	(%TitleButton as Button).text = title_text if not title_text.is_empty() else _title_text
 	_menu_panel.show()
 	_menu_button.hide()
 	get_tree().paused = true
@@ -46,7 +57,7 @@ func open_menu() -> void:
 func close_menu() -> void:
 	_menu_panel.hide()
 	_settings.hide()
-	_menu_button.show()
+	_menu_button.visible = GameFlow.is_pause_enabled()
 	get_tree().paused = false
 
 
@@ -57,4 +68,4 @@ func _on_restart_pressed() -> void:
 
 func _on_title_pressed() -> void:
 	close_menu()
-	SceneManager.change_scene(GameConfig.TITLE_SCENE)
+	GameFlow.go_title()

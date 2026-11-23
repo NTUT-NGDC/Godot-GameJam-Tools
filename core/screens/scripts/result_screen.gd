@@ -23,6 +23,9 @@ func show_result(is_win: bool, message: String) -> void:
 	_title.add_theme_color_override("font_color", WIN_COLOR if is_win else LOSE_COLOR)
 	_message.text = message
 	_message.visible = message != ""
+	var title_text: String = GameFlow.title_button_text()          # 「回標題」可能被換成別的（GameFlow.set_title_button）
+	if not title_text.is_empty():
+		(%TitleButton as Button).text = title_text
 	(%RetryButton as Button).grab_focus()
 
 
@@ -31,4 +34,4 @@ func _on_retry_pressed() -> void:
 
 
 func _on_title_pressed() -> void:
-	SceneManager.change_scene(GameConfig.TITLE_SCENE)
+	GameFlow.go_title()
