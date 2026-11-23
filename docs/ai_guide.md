@@ -98,6 +98,7 @@ game_config.tres   遊戲名稱、開始場景、Credits 名單
 - 移動、計時都乘 `delta`
 - 要讓人改的資料用 `.tres`（不要用 `.json`／`.txt`，Web 匯出不會帶上）
 - `.uid` 檔要 commit（Godot 4.4 之後腳本旁邊都有），`.godot/` 不要
+- **改檔案前先關 Godot**：Godot 編輯器開著的時候改了磁碟上的檔案，Godot 會跳出「要不要重新載入」，使用者按錯就會用舊版蓋掉你的修改。所以改任何檔案（`.gd`／`.tscn`／`.tres`／`project.godot`）前，Godot 開著的話先正常關閉（不要強制結束，有沒存的修改 Godot 會先問），改完再用編輯器打開專案；你沒辦法自己關、開 Godot 的話，請使用者先關掉，改完再開。GDScript 不用編譯，重開很快
 
 ## 給使用者的建議
 
