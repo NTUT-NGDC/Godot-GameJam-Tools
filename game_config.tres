@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3]
+
+[ext_resource type="Script" path="res://core/game_config/scripts/game_config.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+game_name = "我們的遊戲"
+tagline = "經典玩法＋一個變化"
+start_scene = "res://levels/main.tscn"
+credits = "企劃：（名字）
+程式：（名字）
+美術：（名字）
+
+起手包：北科遊戲研究社 Godot-GameJam-Tools"
