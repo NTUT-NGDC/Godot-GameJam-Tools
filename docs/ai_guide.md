@@ -57,6 +57,7 @@ game_config.tres   遊戲名稱、開始場景、Credits 名單
 | 分數 | `score_display.tscn` 拖進 CanvasLayer，`add(10)` 加分；group `score` | `core/hud/` |
 | 計時 | `timer_display.tscn`，正數或倒數，倒數到 0 發 `time_up`（可設定時間到就輸／贏） | `core/hud/` |
 | 血條 | `health_bar.tscn`，`damage(10)`、`heal(10)`，到 0 發 `died`（可設定死掉就輸） | `core/hud/` |
+| 鏡頭 | `follow_camera.tscn` 拖進關卡：跟隨玩家（group `player`）或固定位置；可設長方形邊界（大小、偏移），編輯器裡會畫框。**不要在角色身上另外放 Camera2D** | `core/camera/` |
 | 遊戲設定 | `GameConfig.current().game_name`、`.start_scene`、`.credits` | `game_config.tres` |
 
 ### 技術積木（`addons/`）

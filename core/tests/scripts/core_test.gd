@@ -4,7 +4,8 @@ extends Node
 ## 2. 按鍵：每個常用動作都有設定
 ## 3. 畫面流程：標題（沒有暫停選單）→ 開始遊戲 → 主場景（有暫停選單）→ 暫停／繼續 → 贏 → 再玩一次 → 輸 → 回標題 → Credits
 ## 4. HUD：分數、計時、血條
-## 5. 音量、存讀檔
+## 5. 鏡頭：跟隨、固定、邊界
+## 6. 音量、存讀檔
 ##
 ## 在命令列執行：
 ##   godot --headless --path . res://core/tests/core_test.tscn
@@ -16,6 +17,7 @@ const EXPECTED_ACTIONS: Array[String] = [
 const SCORE_SCENE: PackedScene = preload("res://core/hud/score_display.tscn")
 const TIMER_SCENE: PackedScene = preload("res://core/hud/timer_display.tscn")
 const HEALTH_SCENE: PackedScene = preload("res://core/hud/health_bar.tscn")
+const CAMERA_SCENE: PackedScene = preload("res://core/camera/follow_camera.tscn")
 
 var _failures: int = 0
 
@@ -26,6 +28,7 @@ func _ready() -> void:
 	_test_config()
 	_test_actions()
 	await _test_hud()
+	await _test_camera()
 	_test_audio_and_save()
 	await _test_flow()
 
@@ -93,6 +96,40 @@ func _test_hud() -> void:
 	_expect(bar.is_dead() and dead[0] == 1, "扣到 0：died 只發一次")
 	for node: Node in [score, timer, bar]:
 		node.queue_free()
+
+
+func _test_camera() -> void:
+	print("--- 鏡頭 ---")
+	var world: Node2D = Node2D.new()
+	add_child(world)
+	var target: Node2D = Node2D.new()
+	world.add_child(target)
+	target.add_to_group("player")
+	var camera: FollowCamera = CAMERA_SCENE.instantiate()
+	camera.smoothing = 0.0
+	camera.use_limits = true
+	camera.limit_size = Vector2(2000, 720)                        # 中心在 (0, 0)：左右各 1000
+	world.add_child(camera)
+	await _physics_frames(3)
+	_expect(camera.target == target and camera.is_current(), "跟隨對象空著：自動找 player 群組")
+	target.global_position = Vector2(200, 0)
+	await _physics_frames(3)
+	_expect(camera.get_screen_center_position().is_equal_approx(Vector2(200, 0)), "跟隨：鏡頭跟著玩家（%s）" % camera.get_screen_center_position())
+	target.global_position = Vector2(5000, 3000)
+	await _physics_frames(3)
+	_expect(camera.get_screen_center_position().is_equal_approx(Vector2(360, 0)), "邊界：玩家跑出去，鏡頭停在框的邊上（%s）" % camera.get_screen_center_position())
+	camera.follow = false
+	camera.global_position = Vector2(-100, 0)
+	target.global_position = Vector2(900, 0)
+	await _physics_frames(3)
+	_expect(camera.get_screen_center_position().is_equal_approx(Vector2(-100, 0)), "不跟隨：鏡頭固定不動（%s）" % camera.get_screen_center_position())
+	world.queue_free()
+	await _physics_frames(1)
+
+
+func _physics_frames(count: int) -> void:
+	for i: int in count:
+		await get_tree().physics_frame
 
 
 func _test_audio_and_save() -> void:
