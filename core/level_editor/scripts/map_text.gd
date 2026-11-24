@@ -8,16 +8,23 @@ extends RefCounted
 ##   text_kind(格子)          那一格的地形代號
 ##   set_text_kind(格子, 代號)
 ##   text_fields()           哪些欄位是格子（Vector2i 或 Array[Vector2i]）
+## 不是欄位的東西（例如追逐的物件）自己寫這三個：
+##   text_cells(欄位)、set_text_cells(欄位, 格子們)、text_problem({欄位: 格子們})＝哪裡寫錯
+## 可以有：text_help() 寫在最上面的說明（每行前面加 //，讀的時候跳過）、text_warning() 寫完的提醒
 ##
 ## 命令列：
 ##   godot --headless --path . res://core/level_editor/map_text.tscn -- export res://地圖.tres 檔案.txt
 ##   godot --headless --path . res://core/level_editor/map_text.tscn -- import res://地圖.tres 檔案.txt
 ##   godot --headless --path . res://core/level_editor/map_text.tscn -- new res://新地圖.tres 檔案.txt res://地圖的腳本.gd
+## 地圖是場景（.tscn）：三個都要在最後加地圖的腳本，它要有 read(路徑)（static）和 write(路徑)
 
 static func to_text(map: Resource) -> String:
 	var letters: Dictionary = map.call("text_letters")
 	var size: Vector2i = map.get("size")
 	var rows: PackedStringArray = PackedStringArray()
+	if map.has_method("text_help"):
+		for line: String in map.call("text_help"):
+			rows.append("// " + line)
 	for y: int in size.y:
 		var row: String = ""
 		for x: int in size.x:
@@ -25,10 +32,15 @@ static func to_text(map: Resource) -> String:
 		rows.append(row)
 	rows.append("")
 	for field: String in map.call("text_fields"):
-		var value: Variant = map.get(field)
-		var cells: Array = value if value is Array else [value]
-		rows.append("%s: %s" % [field, " ".join(cells.map(func(c: Vector2i) -> String: return "%d,%d" % [c.x, c.y]))])
+		rows.append("%s: %s" % [field, " ".join(_cells(map, field).map(func(c: Vector2i) -> String: return "%d,%d" % [c.x, c.y]))])
 	return "\n".join(rows) + "\n"
+
+
+static func _cells(map: Resource, field: String) -> Array:
+	if map.has_method("text_cells"):
+		return map.call("text_cells", field)
+	var value: Variant = map.get(field)
+	return value if value is Array else [value]
 
 
 ## 把文字寫進地圖（大小照文字）。回傳哪裡寫錯了（沒錯＝空字串；寫錯的話地圖不會動）
@@ -37,9 +49,11 @@ static func apply(map: Resource, text: String) -> String:
 	var rows: PackedStringArray = PackedStringArray()
 	var points: Dictionary[String, Array] = {}
 	for line: String in text.replace("\r", "").split("\n"):
+		if line.strip_edges().begins_with("//"):
+			continue
 		if line.contains(":"):
 			var field: String = line.get_slice(":", 0).strip_edges()
-			if not (map.call("text_fields") as Array).has(field):
+			if not map.has_method("text_problem") and not (map.call("text_fields") as Array).has(field):
 				return "沒有「%s」這個欄位" % field
 			var cells: Array[Vector2i] = []
 			for item: String in line.get_slice(":", 1).split(" ", false):
@@ -62,8 +76,12 @@ static func apply(map: Resource, text: String) -> String:
 		for cell: Vector2i in points[field]:
 			if not Rect2i(Vector2i.ZERO, size).has_point(cell):
 				return "%s 的 %d,%d 在地圖外面" % [field, cell.x, cell.y]
-		if not map.get(field) is Array and points[field].size() != 1:
+		if not map.has_method("text_problem") and not map.get(field) is Array and points[field].size() != 1:
 			return "%s 要剛好一格" % field
+	if map.has_method("text_problem"):
+		var problem: String = map.call("text_problem", points)
+		if not problem.is_empty():
+			return problem
 	map.call("ensure")
 	if map.get("size") != size:
 		map.call("resize", size)
@@ -75,7 +93,9 @@ static func apply(map: Resource, text: String) -> String:
 			if map.call("text_kind", Vector2i(x, y)) != kind:
 				map.call("set_text_kind", Vector2i(x, y), kind)
 	for field: String in points:
-		if map.get(field) is Array:
+		if map.has_method("set_text_cells"):
+			map.call("set_text_cells", field, points[field])
+		elif map.get(field) is Array:
 			(map.get(field) as Array).assign(points[field])
 		else:
 			map.set(field, points[field][0])

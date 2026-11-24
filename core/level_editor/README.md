@@ -72,6 +72,8 @@ godot --headless --path . res://core/level_editor/map_text.tscn -- import res://
 godot --headless --path . res://core/level_editor/map_text.tscn -- new res://…/maps/b.tres b.txt res://…/scripts/xxx_map.gd
 ```
 
+地圖是場景（追逐的關卡 `.tscn`）：三個都在最後加地圖的腳本（`res://examples/chase/map_editor/scripts/chase_map.gd`），它要有 `read(路徑)`（static）和 `write(路徑)`。不是欄位的東西（追逐的物件）自己寫 `text_cells()`、`set_text_cells()`、`text_problem()`，看 `chase_text.gd`。可以再寫 `text_help()`（最上面的說明）、`text_warning()`（寫完的提醒，例如走不到）。
+
 寫回去只改不一樣的格子。文字檔放專案外面或用完刪掉。規則這種一般欄位直接改 `.tres` 裡的文字就好。
 
 ## 注意

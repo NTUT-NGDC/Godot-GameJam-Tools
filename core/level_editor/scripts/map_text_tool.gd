@@ -11,14 +11,21 @@ func _ready() -> void:
 func _run(args: PackedStringArray) -> String:
 	if args.size() < 3 or not ["export", "import", "new"].has(args[0]):
 		return "要寫 export／import 地圖 文字檔，或 new 新地圖 文字檔 地圖的腳本"
+	var is_scene: bool = args[1].ends_with(".tscn")
+	var script: GDScript = load(args[3]) as GDScript if args.size() > 3 and ResourceLoader.exists(args[3]) else null
 	var map: Resource = null
 	if args[0] == "new":
 		if FileAccess.file_exists(args[1]):
 			return "%s 已經有了，改用 import" % args[1]
-		if args.size() < 4 or not ResourceLoader.exists(args[3]):
+		if script == null:
 			return "new 要給地圖的腳本"
-		map = (load(args[3]) as GDScript).new()
+		map = script.new()
 		map.set("map_name", args[1].get_file().get_basename())
+		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(args[1].get_base_dir()))
+	elif is_scene:
+		if script == null:
+			return "地圖是場景（.tscn），最後要加地圖的腳本"
+		map = script.call("read", args[1])
 	elif ResourceLoader.exists(args[1]):
 		map = load(args[1])
 	if map == null or not map.has_method("text_letters"):
@@ -34,5 +41,7 @@ func _run(args: PackedStringArray) -> String:
 	var problem: String = MapText.apply(map, FileAccess.get_file_as_string(args[2]))
 	if not problem.is_empty():
 		return problem
-	var error: Error = ResourceSaver.save(map, args[1])
+	if map.has_method("text_warning") and not String(map.call("text_warning")).is_empty():
+		print("提醒：" + String(map.call("text_warning")))
+	var error: Error = map.call("write", args[1]) if is_scene else ResourceSaver.save(map, args[1])
 	return "" if error == OK else error_string(error)
