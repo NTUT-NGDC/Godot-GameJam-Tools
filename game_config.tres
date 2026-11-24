@@ -6,7 +6,7 @@
 script = ExtResource("1_script")
 game_name = "我們的遊戲"
 tagline = "經典玩法＋一個變化"
-start_scene = "res://levels/main.tscn"
+levels = Array[String](["res://levels/main.tscn"])
 credits = "企劃：（名字）
 程式：（名字）
 美術：（名字）

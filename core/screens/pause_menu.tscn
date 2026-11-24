@@ -98,6 +98,15 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 22
 text = "設定"
 
+[node name="LevelsButton" type="Button" parent="MenuPanel/Center/Panel/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(264, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "關卡選擇"
+
 [node name="TitleButton" type="Button" parent="MenuPanel/Center/Panel/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(264, 0)

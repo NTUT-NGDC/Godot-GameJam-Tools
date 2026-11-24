@@ -6,6 +6,8 @@ extends Node
 ##   GameFlow.lose()                GameFlow.lose("被抓到了……")
 ## 也可以在檢查器把 signal 連到 GameFlow 的 win／lose（例如生怪器的 reached_goal → lose）。
 ##
+## 有好幾關的話：把關卡場景拖進 game_config.tres 的 Levels，就會有關卡選擇畫面、「下一關」，過關會自動記住。
+##
 ## 暫停選單不用自己放：遊戲中按 Esc（或右上角的「選單」）就會打開。
 ## 標題畫面、Credits 這種不需要暫停的場景，把最上層節點加進 group「no_pause」就好。
 ##
@@ -43,6 +45,9 @@ func _ready() -> void:
 
 ## 贏了：暫停遊戲、顯示勝利畫面
 func win(message: String = "") -> void:
+	var scene: Node = get_tree().current_scene
+	if scene != null and not is_finished():
+		LevelProgress.mark_cleared(scene.scene_file_path)         # 在關卡清單裡的話，記住這關過了
 	_show_result(true, message)
 	won.emit(message)
 
@@ -56,6 +61,19 @@ func lose(message: String = "") -> void:
 ## 現在是不是正在顯示勝敗畫面
 func is_finished() -> bool:
 	return _result != null and is_instance_valid(_result)
+
+
+## 下一關的場景（現在不在關卡清單裡、已經是最後一關＝空字串）
+func next_level() -> String:
+	var scene: Node = get_tree().current_scene
+	return GameConfig.current().next_level(scene.scene_file_path) if scene != null else ""
+
+
+## 現在這一關可以回關卡選擇嗎（在關卡清單裡、而且有兩關以上）
+func can_select_level() -> bool:
+	var scene: Node = get_tree().current_scene
+	var config: GameConfig = GameConfig.current()
+	return scene != null and config.has_level_select() and config.level_index(scene.scene_file_path) >= 0
 
 
 ## 打開或關掉暫停選單（關掉：右上角的「選單」藏起來、Esc 不會打開）。只對現在這個場景有效

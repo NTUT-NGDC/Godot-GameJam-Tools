@@ -1,7 +1,7 @@
 extends Control
 ## 標題畫面：開始遊戲／設定／Credits／離開遊戲。這是專案的主場景，按 F5 會先看到它。
 ##
-## 遊戲名稱、標語、開始場景不用改這裡：改專案最上層的 game_config.tres。
+## 遊戲名稱、標語、關卡不用改這裡：改專案最上層的 game_config.tres。
 ## 想改字的大小、顏色、背景圖：打開 title_screen.tscn，點節點在右邊的檢查器改。
 ##   ・背景圖：把圖片拖進 BackgroundImage 的 Texture
 
@@ -43,11 +43,12 @@ func _on_settings_closed() -> void:
 	(%SettingsButton as Button).grab_focus()
 
 
-## 開始遊戲：換到 game_config.tres 設定的開始場景
+## 開始遊戲：只有一關就直接進去，兩關以上先到關卡選擇（關卡在 game_config.tres 的 Levels）
 func _on_start_pressed() -> void:
-	var start: String = GameConfig.current().start_scene
-	if start == "" or not ResourceLoader.exists(start):
-		_message.text = "還沒有設定開始場景。\n請雙擊專案最上層的 game_config.tres，設定「Start Scene」。"
+	var config: GameConfig = GameConfig.current()
+	var levels: PackedStringArray = config.level_paths()
+	if levels.is_empty():
+		_message.text = "還沒有設定關卡。\n請雙擊專案最上層的 game_config.tres，把關卡場景拖進「Levels」。"
 		_message.show()
 		return
-	SceneManager.change_scene(start)
+	SceneManager.change_scene(GameConfig.LEVEL_SELECT_SCENE if config.has_level_select() else levels[0])

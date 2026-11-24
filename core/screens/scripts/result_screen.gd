@@ -1,5 +1,5 @@
 extends CanvasLayer
-## 勝利／失敗畫面：GameFlow.win()／lose() 時跳出來。再玩一次、回到標題。
+## 勝利／失敗畫面：GameFlow.win()／lose() 時跳出來。下一關（有的話）、再玩一次、關卡選擇（有的話）、回到標題。
 ## 想改文字、顏色：打開 result_screen.tscn，點節點在右邊的檢查器改。
 
 ## 勝利、失敗時大標題的文字和顏色
@@ -16,6 +16,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	(%RetryButton as Button).pressed.connect(_on_retry_pressed)
 	(%TitleButton as Button).pressed.connect(_on_title_pressed)
+	(%NextButton as Button).pressed.connect(_on_next_pressed)
+	(%LevelsButton as Button).pressed.connect(func() -> void: SceneManager.change_scene(GameConfig.LEVEL_SELECT_SCENE))
 
 
 func show_result(is_win: bool, message: String) -> void:
@@ -26,7 +28,13 @@ func show_result(is_win: bool, message: String) -> void:
 	var title_text: String = GameFlow.title_button_text()          # 「回標題」可能被換成別的（GameFlow.set_title_button）
 	if not title_text.is_empty():
 		(%TitleButton as Button).text = title_text
-	(%RetryButton as Button).grab_focus()
+	(%NextButton as Button).visible = is_win and not GameFlow.next_level().is_empty()
+	(%LevelsButton as Button).visible = GameFlow.can_select_level()
+	((%NextButton if (%NextButton as Button).visible else %RetryButton) as Button).grab_focus()
+
+
+func _on_next_pressed() -> void:
+	SceneManager.change_scene(GameFlow.next_level())
 
 
 func _on_retry_pressed() -> void:

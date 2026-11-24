@@ -15,7 +15,7 @@
 
 按鍵、Autoload、開始場景都在 `project.godot` 裡，**最容易衝突**。常用按鍵起手包已經設好了；真的要新增，先在組裡講，由一個人改。
 
-開始場景、遊戲名稱、製作名單不在 `project.godot`，在 `game_config.tres`（也是一個人改就好）。
+關卡、遊戲名稱、製作名單不在 `project.godot`，在 `game_config.tres`（也是一個人改就好）。
 
 ## 3. 分支和合併
 

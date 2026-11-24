@@ -50,7 +50,7 @@ func _test_config() -> void:
 	print("--- 設定檔 ---")
 	var config: GameConfig = GameConfig.current()
 	_expect(config != null and config.game_name != "", "game_config.tres 讀得到（%s）" % config.game_name)
-	_expect(ResourceLoader.exists(config.start_scene), "開始場景存在（%s）" % config.start_scene)
+	_expect(not config.levels.is_empty() and config.level_paths().size() == config.levels.size(), "Levels 有設定、每一關都存在（%d 關）" % config.level_paths().size())
 	var test: GameConfig = GameConfig.new()
 	test.credits = "程式：小明\n\n美術：小華\n\n"
 	_expect(test.credit_lines() == PackedStringArray(["程式：小明", "", "美術：小華"]), "Credits 一行一個，保留中間的空白行、去掉最後的空白行")
@@ -200,11 +200,20 @@ func _test_flow() -> void:
 	_expect(_pause_menu() == null, "標題畫面沒有暫停選單")
 	_expect((title.get_node("%GameName") as Label).text == GameConfig.current().game_name, "標題顯示 game_config 的遊戲名稱")
 
-	var start: String = GameConfig.current().start_scene
+	# 只留第一關（專案自己有幾關都可以測），進度存到測試用的檔案，測完還原
+	var config: GameConfig = GameConfig.current()
+	var own_levels: Array[String] = config.levels
+	var own_path: String = LevelProgress.save_path
+	LevelProgress.save_path = "user://_test_flow_progress.json"
+	var start: String = config.level_paths()[0]
+	config.levels = []
+	(title.get_node("%StartButton") as Button).pressed.emit()
+	_expect((title.get_node("%MessageLabel") as Label).visible and not SceneManager.is_transitioning(), "Levels 空著：提示去設定，不會換場景")
+	config.levels = [start]
 	var start_name: String = (load(start) as PackedScene).get_state().get_node_name(0)
 	(title.get_node("%StartButton") as Button).pressed.emit()
 	await _wait_scene(start_name)
-	_expect(get_tree().current_scene.scene_file_path == start, "按開始遊戲 → 開始場景（%s）" % start)
+	_expect(get_tree().current_scene.scene_file_path == start, "只有一關：按開始遊戲直接進去（%s）" % start)
 	var menu: CanvasLayer = _pause_menu()
 	_expect(menu != null, "遊戲場景自動有暫停選單")
 	if menu != null:
@@ -277,10 +286,116 @@ func _test_flow() -> void:
 	_expect(get_tree().current_scene.name == "TitleScreen" and not get_tree().paused, "回到標題")
 	_expect(GameFlow.is_pause_enabled(), "換場景：關掉的暫停選單自動恢復")
 
+	await _test_levels()
+	config.levels = own_levels
+	LevelProgress.clear()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(LevelProgress.save_path))
+	LevelProgress.save_path = own_path
+
 	(get_tree().current_scene.get_node("%CreditsButton") as Button).pressed.emit()
 	await _wait_scene("CreditsScreen")
 	var list: Node = get_tree().current_scene.get_node("%CreditsList")
 	_expect(list.get_child_count() == GameConfig.current().credit_lines().size(), "Credits 照設定檔產生 %d 行" % list.get_child_count())
+
+
+## 關卡清單、關卡選擇、下一關、過關進度。用測試自己的場景和進度檔，測完還原（從標題畫面開始、回到標題畫面）
+func _test_levels() -> void:
+	print("--- 關卡 ---")
+	var config: GameConfig = GameConfig.current()
+	var old_levels: Array[String] = config.levels
+	var old_names: String = config.level_names
+	var old_order: bool = config.unlock_in_order
+	var old_path: String = LevelProgress.save_path
+	LevelProgress.save_path = "user://_test_level_progress.json"
+	LevelProgress.clear()
+	config.levels = []
+	_expect(not config.has_level_select() and config.next_level(GameConfig.TITLE_SCENE) == "", "清單空著：沒有關卡選擇、沒有下一關")
+
+	# 做三個只有一個節點的關卡
+	var paths: Array[String] = []
+	for i: int in 3:
+		var node: Node2D = Node2D.new()
+		node.name = "TestLevel%d" % (i + 1)
+		var packed: PackedScene = PackedScene.new()
+		packed.pack(node)
+		node.free()
+		paths.append("user://_test_level_%d.tscn" % (i + 1))
+		ResourceSaver.save(packed, paths[i])
+	config.levels = [paths[0], "", paths[1], "res://沒有這個檔案.tscn", paths[2]]
+	config.level_names = "開頭\n（空的）\n\n（不見的）\n最後"
+	config.unlock_in_order = true
+	_expect(Array(config.level_paths()) == paths and config.has_level_select(), "空的、找不到的關卡跳過")
+	_expect([config.level_name(0), config.level_name(1), config.level_name(2)] == ["開頭", "第 2 關", "最後"], "關卡名字：照格子對，沒寫的叫第幾關（%s）" % [[config.level_name(0), config.level_name(1), config.level_name(2)]])
+	_expect(config.next_level(paths[0]) == paths[1] and config.next_level(paths[2]) == "", "下一關；最後一關沒有下一關")
+	_expect(LevelProgress.is_unlocked(0) and not LevelProgress.is_unlocked(1) and not LevelProgress.is_unlocked(9), "照順序解鎖：一開始只有第 1 關")
+
+	var uid: int = ResourceUID.create_id()
+	ResourceUID.add_id(uid, paths[1])
+	config.levels = [paths[0], ResourceUID.id_to_text(uid), paths[2]]
+	_expect(Array(config.level_paths()) == paths and config.next_level(paths[0]) == paths[1], "檢查器存成 uid:// 也一樣")
+	config.level_names = "開頭\n\n最後"
+	(get_tree().current_scene.get_node("%StartButton") as Button).pressed.emit()
+	await _wait_scene("LevelSelectScreen")
+	var grid: GridContainer = get_tree().current_scene.get_node("%LevelGrid")
+	_expect(grid.get_child_count() == 3 and not (grid.get_child(0) as Button).disabled and (grid.get_child(1) as Button).disabled, "開始遊戲 → 關卡選擇：3 顆按鈕，第 2 關還沒解鎖")
+	_expect(_pause_menu() == null, "關卡選擇沒有暫停選單")
+	(grid.get_child(0) as Button).pressed.emit()
+	await _wait_scene("TestLevel1")
+	_expect(get_tree().current_scene.name == "TestLevel1", "按第 1 關：進去")
+	_pause_menu().call("open_menu")
+	_expect((_pause_menu().get_node("%LevelsButton") as Button).visible, "暫停選單：有「關卡選擇」")
+	_pause_menu().call("close_menu")
+	GameFlow.lose("測試")
+	await get_tree().process_frame
+	_expect(not (_result().get_node("%NextButton") as Button).visible and (_result().get_node("%LevelsButton") as Button).visible and not LevelProgress.is_cleared(paths[0]), "輸了：沒有下一關、有關卡選擇、不算過關")
+	(_result().get_node("%RetryButton") as Button).pressed.emit()
+	await _wait_scene("TestLevel1", true)
+	await get_tree().process_frame
+	GameFlow.win("測試")
+	await get_tree().process_frame
+	_expect((_result().get_node("%NextButton") as Button).visible and LevelProgress.is_cleared(paths[0]) and LevelProgress.is_unlocked(1) and not LevelProgress.is_unlocked(2), "贏了：有下一關、記住過關、第 2 關解鎖")
+	(_result().get_node("%NextButton") as Button).pressed.emit()
+	await _wait_scene("TestLevel2")
+	_expect(get_tree().current_scene.name == "TestLevel2" and not get_tree().paused and not GameFlow.is_finished(), "下一關：換到第 2 關")
+
+	# 進度有存檔
+	LevelProgress.save_path = "user://_test_level_other.json"
+	_expect(not LevelProgress.is_cleared(paths[0]), "換一個進度檔：沒有過關")
+	LevelProgress.save_path = "user://_test_level_progress.json"
+	_expect(LevelProgress.is_cleared(paths[0]), "重新讀進度檔：過關還在")
+	LevelProgress.mark_cleared(GameConfig.TITLE_SCENE)
+	_expect(not LevelProgress.is_cleared(GameConfig.TITLE_SCENE), "不在清單裡的場景不記")
+
+	SceneManager.change_scene(paths[2], 0.0)
+	await _wait_scene("TestLevel3")
+	GameFlow.win("最後一關")
+	await get_tree().process_frame
+	_expect(not (_result().get_node("%NextButton") as Button).visible and (_result().get_node("%RetryButton") as Button).visible, "最後一關：沒有下一關")
+	(_result().get_node("%LevelsButton") as Button).pressed.emit()
+	await _wait_scene("LevelSelectScreen")
+	grid = get_tree().current_scene.get_node("%LevelGrid")
+	_expect((grid.get_child(0) as Button).text.contains("過關") and not (grid.get_child(1) as Button).disabled, "回關卡選擇：過了的打勾、第 2 關可以玩")
+	config.unlock_in_order = false
+	LevelProgress.clear()
+	_expect(LevelProgress.is_unlocked(2), "取消照順序解鎖：全部可以玩")
+	config.unlock_in_order = true
+	LevelProgress.mark_cleared(paths[0])
+	var clear_button: Button = get_tree().current_scene.get_node("%ClearButton")
+	clear_button.pressed.emit()
+	_expect(LevelProgress.is_cleared(paths[0]), "清除進度：按一次只是確認")
+	clear_button.pressed.emit()
+	_expect(not LevelProgress.is_cleared(paths[0]) and (grid.get_child(1) as Button).disabled, "再按一次：進度清掉")
+	(get_tree().current_scene.get_node("%BackButton") as Button).pressed.emit()
+	await _wait_scene("TitleScreen")
+	_expect(get_tree().current_scene.name == "TitleScreen", "返回：回標題")
+
+	for path: String in paths + ["user://_test_level_progress.json", "user://_test_level_other.json"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	config.levels = old_levels
+	config.level_names = old_names
+	config.unlock_in_order = old_order
+	LevelProgress.save_path = old_path
 
 
 ## 等到目前的場景換成 scene_name（reload 時名字一樣，用 changed 判斷有沒有真的換過）

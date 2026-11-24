@@ -1,5 +1,5 @@
 extends CanvasLayer
-## 暫停選單：遊戲中按 Esc 或右上角的「選單」打開。繼續／重來／設定／回到標題。
+## 暫停選單：遊戲中按 Esc 或右上角的「選單」打開。繼續／重來／設定／關卡選擇（有好幾關的話）／回到標題。
 ## 打開時整個遊戲會暫停，選單本身照常運作。
 ## GameFlow 會自動把它加進每個遊戲場景，不用自己放。
 ##
@@ -20,6 +20,7 @@ func _ready() -> void:
 	(%RestartButton as Button).pressed.connect(_on_restart_pressed)
 	(%SettingsButton as Button).pressed.connect(_settings.show)
 	(%TitleButton as Button).pressed.connect(_on_title_pressed)
+	(%LevelsButton as Button).pressed.connect(_on_levels_pressed)
 	_settings.connect("closed", _settings.hide)
 	refresh()
 
@@ -47,6 +48,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func open_menu() -> void:
 	var title_text: String = GameFlow.title_button_text()          # 「回標題」可能被換成別的（GameFlow.set_title_button）
 	(%TitleButton as Button).text = title_text if not title_text.is_empty() else _title_text
+	(%LevelsButton as Button).visible = GameFlow.can_select_level()
 	_menu_panel.show()
 	_menu_button.hide()
 	get_tree().paused = true
@@ -64,6 +66,11 @@ func close_menu() -> void:
 func _on_restart_pressed() -> void:
 	close_menu()
 	SceneManager.reload()
+
+
+func _on_levels_pressed() -> void:
+	close_menu()
+	SceneManager.change_scene(GameConfig.LEVEL_SELECT_SCENE)
 
 
 func _on_title_pressed() -> void:
