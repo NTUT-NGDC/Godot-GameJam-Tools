@@ -4,7 +4,7 @@
 
 ## 1. 照功能分工，每個人只動自己的資料夾
 
-開工前在 `docs/game_overview.md` 填好**分工表**：每個人負責什麼功能、哪個資料夾、分支叫什麼，還有**誰負責主場景**。
+開工前在 `docs/game_overview.md` 填好**分工表**：每個人負責什麼功能、哪個資料夾，還有**誰負責主場景**。
 
 - 你的功能放在 `features/<功能名稱>/`，這個資料夾只有你會改
 - 先在自己的 `test.tscn` 測好，要放進遊戲時，跟主場景負責人說，由他在 `levels/` 放一個實例
@@ -17,20 +17,21 @@
 
 關卡、遊戲名稱、製作名單不在 `project.godot`，在 `game_config.tres`（也是一個人改就好）。
 
-## 3. 分支和合併
+## 3. 存進度、同步
 
-1. 開工前先拉最新版：`git pull`
-2. 每個功能開一個分支：`git checkout -b feature/enemy`
-3. **每 20～30 分鐘合併一次**：commit → 切回 main → `git pull` → `git merge feature/enemy` → `git push`
-4. 拖越久越容易衝突
+大家直接在 `main` 上做，不開分支：檔案已經分開了，分支只會多出錯的機會。
 
-不熟 Git 的人：用 GitHub Desktop 也可以，流程一樣。
+- **GitHub Desktop（建議，不花 AI 額度）**：左邊**只勾自己的檔案**（預設全部打勾）→ 打一句做了什麼 → **Commit to main** → **Fetch origin** →（變成 **Pull origin** 就按）→ **Push origin**。不知道要勾哪些，跟 AI 說「同步」，它會列給你
+- **叫 AI 做**：要裝 Git for Windows。說「**存進度**」「**同步**」「**救回來**」，它照 [ai_git.md](ai_git.md) 做
+- **每做完一張卡、或每 20 分鐘同步一次**，拖越久越容易衝突。同步前先在 Godot `Ctrl+S`，同步後 Godot 問要不要重新載入，選「重新載入」
+
+什麼時候該開分支：要繼續做好幾週、或想試一個可能整個丟掉的大改。
 
 ## 4. 真的衝突了
 
-- `.gd` 腳本、`.md`：照 Git 的提示手動合併
-- **`.tscn`、`.tres` 不要手動合併**：選一邊保留（`git checkout --ours` 或 `--theirs`），再把另一邊的小改動在 Godot 裡重做一次
-- 不確定的話，先問組員，不要硬按
+- GitHub Desktop 跳出 **Resolve conflicts before Merge**：先按 **Abort merge**（不要按 X），再跟 AI 說，或找社長
+- **這個檔案分工表寫是誰的，就留誰的**，另一個人把小改動重做一次。`.tscn`、`.tres` 不要手動合併
+- 看不出是誰的（`project.godot`、`game_config.tres`、兩個人都有份）：先取消，找社長或組裡有高階 AI 的人。東西都還在，不要硬按
 
 ## 5. 給 AI 的規則
 
