@@ -6,6 +6,7 @@ extends Node
 ## 4. HUD：分數、計時、血條
 ## 5. 鏡頭：跟隨、固定、邊界；可移動縮放的鏡頭（移動、縮放、邊界）
 ## 6. 音量、存讀檔
+## 7. 關卡編輯器的底（用最小範例測）
 ##
 ## 在命令列執行：
 ##   godot --headless --path . res://core/tests/core_test.tscn
@@ -35,6 +36,8 @@ func _ready() -> void:
 	await _test_camera()
 	await _test_pan_camera()
 	_test_audio_and_save()
+	await _test_level_editor()
+	await _test_tool_categories()
 	await _test_flow()
 
 	_failures += _script_errors.report()
@@ -173,6 +176,130 @@ func _test_pan_camera() -> void:
 func _physics_frames(count: int) -> void:
 	for i: int in count:
 		await get_tree().physics_frame
+
+
+## 工具分類：最小範例加上分類
+class SortedEditor extends "res://core/level_editor/sample/scripts/sample_editor.gd":
+	var box: HBoxContainer
+
+	func _setup() -> void:
+		super()
+		tools[0]["category"] = "地形"
+		tools[2]["category"] = "物件"
+		add_category("地形")
+		add_category("物件")
+		add_category("空的")
+
+	func _build_rows() -> void:
+		var row: HBoxContainer = add_category_rows()
+		box = add_category_box(row, ["地形", "空的"])
+		add_shape_buttons(box)
+		add_file_controls(add_row(660))
+
+
+func _test_tool_categories() -> void:
+	var editor: SortedEditor = SortedEditor.new()
+	add_child(editor)
+	await get_tree().physics_frame
+	var buttons: Dictionary[int, Button] = editor.get("_tool_buttons")
+	_expect(editor.category == "地形" and buttons[0].visible and buttons[1].visible and not buttons[2].visible and editor.box.visible, "工具分類：只看得到這一類，沒分類的一直都在")
+	editor.set_category("物件")
+	_expect(editor.tool == 2 and not buttons[0].visible and not editor.box.visible, "工具分類：換一類，用那一類的工具")
+	editor.set_tool(1)
+	_expect(editor.category == "物件", "工具分類：用沒分類的工具不會換分類")
+	editor.set_category("空的")
+	_expect(editor.tool == 1 and editor.box.visible, "工具分類：沒有工具的分類，用沒分類的那個")
+	editor.queue_free()
+	LevelEditor.forget_sessions()
+	await get_tree().physics_frame
+
+
+## 關卡編輯器的底：畫、放、上一步、存讀、自動表單、試玩、做成關卡
+func _test_level_editor() -> void:
+	var editor: LevelEditor = (load("res://core/level_editor/sample/sample_editor.tscn") as PackedScene).instantiate()
+	add_child(editor)
+	await get_tree().physics_frame
+	var map: SampleMap = editor.map
+	editor.set_tool(0)
+	editor.press(editor.cell_center(Vector2i(5, 5)), false)
+	editor.release(editor.cell_center(Vector2i(5, 5)))
+	_expect(map.walls == [Vector2i(5, 5)], "編輯器：畫牆")
+	editor.set_shape(LevelEditor.Shape.RECT)
+	editor.press(editor.cell_center(Vector2i(8, 2)), false)
+	editor.release(editor.cell_center(Vector2i(9, 4)))
+	_expect(map.walls.size() == 7 and map.walls.has(Vector2i(9, 4)), "編輯器：矩形")
+	editor.undo()
+	_expect(map.walls.size() == 1, "編輯器：上一步")
+	editor.redo()
+	_expect(map.walls.size() == 7, "編輯器：下一步")
+	_expect(not editor.start_test(), "編輯器：沒有星星不能試玩")
+	editor.set_tool(2)
+	_expect(editor.place(Vector2i(10, 8)) and not editor.place(Vector2i(10, 8)) and not editor.place(Vector2i(5, 5)), "編輯器：放星星（不能重複、不能在牆上）")
+	editor.resize_map(Vector2i(8, 8))
+	_expect(map.size == Vector2i(8, 8) and map.walls.size() == 1 and map.stars.is_empty(), "編輯器：改小，外面的拿掉")
+	editor.undo()
+	_expect(map.stars.size() == 1 and map.size == Vector2i(20, 12), "編輯器：改大小也能上一步")
+	editor.set_page(1)
+	var rules: LevelEditorFormPage = editor.pages[1]["panel"]
+	rules.set_value("speed", 350.0)
+	editor.undo()
+	_expect(map.speed == 200.0, "編輯器：規則頁也能上一步")
+	editor.redo()
+	editor.set_page(0)
+	(editor.get("_name_edit") as LineEdit).text = "_test_sample"
+	_expect(editor.is_dirty(), "編輯器：改了還沒存")
+	var path: String = editor.save_map()
+	_expect(not editor.is_dirty() and FileAccess.file_exists(path), "編輯器：存檔")
+	var saved: Dictionary = map.snapshot()
+	var copy: SampleMap = map.duplicate(true)
+	_expect(MapText.apply(copy, MapText.to_text(map)).is_empty() and copy.snapshot() == saved, "地圖轉成文字再轉回來，一樣")
+	_expect(not MapText.apply(copy, "...\n..").is_empty() and not MapText.apply(copy, "..?\n...").is_empty() and not MapText.apply(copy, "...\n...\nstars: 9,9").is_empty() and copy.snapshot() == saved, "文字寫錯：說哪裡錯，地圖不動")
+	var level: String = editor.make_level()
+	var made: Node = (load(level) as PackedScene).instantiate()
+	_expect((made as SampleLevel).map.resource_path == path and editor.make_level().is_empty(), "編輯器：做成關卡，不會蓋掉")
+	made.free()
+	editor.new_map()
+	_expect(editor.load_map(path) and (editor.map as SampleMap).snapshot() == saved, "編輯器：讀回來一模一樣")
+	editor.request_test()
+	_expect(editor.is_testing() and not (editor.get("_ask") as ConfirmationDialog).visible, "編輯器：都存好了，按試玩直接開始")
+	editor.stop_test()
+	await get_tree().process_frame
+	var old_speed: float = (editor.map as SampleMap).speed
+	(editor.map as SampleMap).speed = 321.0
+	editor.request_test()
+	var ask: ConfirmationDialog = editor.get("_ask")
+	_expect(not editor.is_testing() and ask.visible and ask.dialog_text.contains("地圖"), "編輯器：沒存檔就按試玩，先問")
+	ask.hide()
+	ask.custom_action.emit(&"skip")
+	_expect(editor.is_testing() and editor.is_dirty(), "編輯器：不存，直接試玩")
+	editor.stop_test()
+	await get_tree().process_frame
+	editor.request_test()
+	ask.hide()
+	ask.confirmed.emit()
+	_expect(editor.is_testing() and not editor.is_dirty(), "編輯器：存檔並試玩")
+	editor.stop_test()
+	await get_tree().process_frame
+	(editor.map as SampleMap).speed = old_speed
+	editor.save_map()
+	_expect(editor.start_test() and editor.is_testing(), "編輯器：試玩")
+	await get_tree().physics_frame
+	var play: SampleLevel = editor.get("_play")
+	_expect(play.stars == [Vector2i(10, 8)] and play.map != editor.map and play.map.speed == 350.0, "編輯器：試玩用的是地圖的複本，規則也在")
+	_expect((play.get_node("Camera2D") as Camera2D).is_current(), "編輯器：試玩用關卡的鏡頭")
+	editor.stop_test()
+	_expect(not editor.is_testing(), "編輯器：停止試玩")
+	_expect((editor.get("_camera") as PanCamera).is_current(), "編輯器：停止試玩，鏡頭換回來")
+	var fields: Array[Dictionary] = LevelEditorForm.fields_of(map)
+	var speed: Dictionary = fields.filter(func(f: Dictionary) -> bool: return f["name"] == "speed")[0]
+	_expect(speed["label"] == "走多快" and speed["max"] == 600.0 and speed["suffix"] == "px/s", "自動表單：名字讀註解、範圍和單位讀 @export_range")
+	editor.queue_free()
+	LevelEditor.forget_sessions()
+	for file: String in [path, level]:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
+	for dir: String in ["maps", "levels"]:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path("res://core/level_editor/sample/" + dir))
+	await get_tree().physics_frame
 
 
 func _test_audio_and_save() -> void:

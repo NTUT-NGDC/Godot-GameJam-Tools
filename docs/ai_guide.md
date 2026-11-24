@@ -15,12 +15,12 @@
 
 這是多人協作的專案，**一次改一堆檔案最容易造成衝突**。
 
-1. 先看 `docs/game_overview.md` 的**分工表**，找到現在這個人負責的功能和資料夾
+1. 先看 `docs/game_overview.md` 的**分工表**，找到現在這個人負責的功能和資料夾（還沒填的話，先請使用者說他負責哪裡，幫他填好再開始；名字不知道就問，不要自己編）
 2. **只修改分工表上屬於這個人的資料夾**（通常是 `features/<功能名稱>/`）
 3. 要動下面這些，**先停下來問使用者**，不要直接改：
    - 別人的資料夾
    - `core/`（起手包）、`addons/`（技術積木）：更新時會整包換掉，改了會不見
-   - 主場景（`levels/` 裡的場景）：由一個人負責組裝
+   - 主場景（專案最上層的 `levels/`）：由一個人負責組裝
    - `project.godot`（按鍵、Autoload、開始場景都在裡面，最容易衝突）
    - `shared/`：大家共用的東西
 4. 新功能做成**獨立場景**，放在 `features/<功能名稱>/`，附一個 `test.tscn` 可以單獨測試；要放進遊戲時，交給主場景負責人在 `levels/` 放一個實例
@@ -59,6 +59,7 @@ game_config.tres   遊戲名稱、關卡（Levels）、Credits 名單
 | 計時 | `timer_display.tscn`，正數或倒數，倒數到 0 發 `time_up`（可設定時間到就輸／贏） | `core/hud/` |
 | 血條 | `health_bar.tscn`，`damage(10)`、`heal(10)`，到 0 發 `died`（可設定死掉就輸） | `core/hud/` |
 | 鏡頭 | `follow_camera.tscn` 拖進關卡：跟隨玩家（group `player`）或固定位置；可設長方形邊界（大小、偏移），編輯器裡會畫框。**不要在角色身上另外放 Camera2D**。策略、塔防用 `pan_camera.tscn`：WASD／方向鍵、滑鼠到邊緣、中鍵拖曳移動，滾輪縮放（可設要按 Ctrl），可設邊界（`set_limit_rect()`） | `core/camera/` |
+| 關卡編輯器的底 | 要讓人「在遊戲裡畫關卡、放東西」就 `extends LevelEditor`：分頁、畫筆、上一步、存讀檔、試玩、做成關卡都有了，只寫自己的工具。從 `core/level_editor/sample/` 抄，步驟看 [README](../core/level_editor/README.md)。自動表單 `LevelEditorForm`、怪物／棋子這種場景頁 `LevelEditorScenePage` 也在裡面，**不要自己重寫編輯器** | `core/level_editor/` |
 | 遊戲設定 | `GameConfig.current().game_name`、`.level_paths()`、`.credits` | `game_config.tres` |
 
 ### 技術積木（`addons/`）
@@ -99,7 +100,21 @@ game_config.tres   遊戲名稱、關卡（Levels）、Credits 名單
 - 移動、計時都乘 `delta`
 - 要讓人改的資料用 `.tres`（不要用 `.json`／`.txt`，Web 匯出不會帶上）
 - `.uid` 檔要 commit（Godot 4.4 之後腳本旁邊都有），`.godot/` 不要
-- **改檔案前先關 Godot**：Godot 編輯器開著的時候改了磁碟上的檔案，Godot 會跳出「要不要重新載入」，使用者按錯就會用舊版蓋掉你的修改。所以改任何檔案（`.gd`／`.tscn`／`.tres`／`project.godot`）前，Godot 開著的話先正常關閉（不要強制結束，有沒存的修改 Godot 會先問），改完再用編輯器打開專案；你沒辦法自己關、開 Godot 的話，請使用者先關掉，改完再開。GDScript 不用編譯，重開很快
+- **改檔案前先關 Godot**：Godot 編輯器開著的時候改了磁碟上的檔案，Godot 會跳出「要不要重新載入」，使用者按錯就會用舊版蓋掉你的修改。所以改任何檔案（`.gd`／`.tscn`／`.tres`／`project.godot`）前，Godot 開著的話先正常關閉（不要強制結束，有沒存的修改 Godot 會先問），改完再用編輯器打開專案；你沒辦法自己關、開 Godot 的話，請使用者先關掉，改完再開。GDScript 不用編譯，重開很快。使用者說可以、或說他開的是別的專案，就直接做，不用一直停下來等。`--headless` 的驗證在編輯器開著時也可以跑
+
+## 改完怎麼驗證
+
+改完**一定要跑過**再說做好了。`godot` 換成這台電腦上 Godot 4.7.2 的執行檔路徑；`--headless` 不會開視窗，`--fixed-fps 60` 讓它不等時間、跑得快：
+
+1. 新增了檔案或 `class_name`：先讓 Godot 認得（也會產生 `.uid`；第一次跑會有幾行字型的 `ERROR`，再跑一次就沒有）
+   `godot --headless --path . --import`
+2. 跑你改的場景約 5 秒，**看輸出有沒有 `ERROR`、`WARNING`**（有錯誤 exit code 也會是 0，一定要看文字）
+   `godot --headless --fixed-fps 60 --path . res://features/<功能名稱>/test.tscn --quit-after 300`
+3. 改了起手包（`core/`）：`godot --headless --fixed-fps 60 --path . res://core/tests/core_test.tscn`，全部過會印「全部 PASS」，失敗時 exit code 是 1
+
+- 不要用 `--check-only` 檢查腳本，`--script` 也一樣：不會載入 Autoload（GameFlow……），會報假的錯誤。要臨時試東西就做一個場景掛腳本，跑那個場景，試完刪掉
+- 一次只跑一個 Godot，不要同時開好幾個
+- headless 看不到畫面：跟畫面、手感有關的，請使用者按 F6 試玩
 
 ## 給使用者的建議
 

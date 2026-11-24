@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://core/level_editor/sample/scripts/sample_editor.gd" id="1_script"]
+
+[node name="SampleEditor" type="Node2D"]
+script = ExtResource("1_script")

@@ -86,6 +86,7 @@
 | [scene_manager](core/scene_manager/README.md) | 換場景（淡入淡出、Loading 畫面） |
 | [audio_manager](core/audio_manager/README.md) | BGM／音效、音量記住 |
 | [save_system](core/save_system/README.md) | 存讀檔 |
+| [level_editor](core/level_editor/README.md) | 遊戲裡的關卡編輯器（底）：畫、放、上一步、存讀、試玩都有了，只寫自己的工具 |
 
 想幫忙開發起手包：看 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
