@@ -14,7 +14,7 @@
 
 > A 你自己用 GitHub Desktop（不花 AI 額度，建議）　B 我幫你　C 這次先不要
 
-- **A**：照最下面「用 GitHub Desktop」教他，**不要跑同步的指令**
+- **A**：照最下面「用 GitHub Desktop」教他。**先跑 `git status --short` 看他改了什麼**（只是看，可以跑），但不要幫他 add、commit、pull、push
 - **B**：照下面的步驟做。他直接說「你幫我同步」就是 B
 - 「救回來」都由你做
 
@@ -62,6 +62,8 @@
 
 ## 衝突
 
+**他說撞到了、跳出 Resolve conflicts、按過 Abort merge**：換你做，不用再問誰來做，也不要教他 Undo commit、看 History，不要自己想別的辦法。`git status` 說還在合併（unmerged）→ `git merge --abort`。然後 `git pull --no-rebase --no-edit` 讓它再撞一次，照下面 1～6 做完。**沒有撞**（pull 成功）→ 直接「同步」第 3 步。
+
 **不用判斷誰寫得好：分工表寫是誰的，就留誰的。** `.tscn`、`.tres`、`.gd` 都一樣，不要自己把兩邊的內容拼起來。
 
 1. `git diff --name-only --diff-filter=U` 列出衝突的檔案，看分工表和任務卡是誰的
@@ -87,7 +89,7 @@
 
 ## 用 GitHub Desktop（他自己來）
 
-先用 `git status --short` 看他改了什麼（沒有 git 就看這個對話改過的檔案），分成他的、不是他的，然後只講這些，檔案和那句話換成真的：
+先跑 `git status --short`，不要憑印象列（沒有 git 才看這個對話改過的檔案），分成他的、不是他的。然後**照這五步和最後那句講**，檔案和那句話換成真的：
 
 > 1. 在 Godot 按 `Ctrl+S`（F6 的編輯器有開也按存檔）
 > 2. GitHub Desktop 左邊**只勾這些**：`features/noisy_floor/` 全部、`docs/tasks/02_noisy_floor.md`
@@ -101,4 +103,4 @@
 - 跳出「files would be overwritten」：按 **Stash changes and continue**（收起來，不會不見）
 - 不見了 Abort merge 的視窗（按到 X）：上面的橫條（Resolve conflicts and commit to merge into main）按 **View conflicts** 就回來了，沒有橫條就找社長，不要 commit
 - 只想「存進度」：做到第 3 步就好
-- 按過 Abort merge：有 git 的話換你做：先「第一次先檢查」，再從「同步」第 2 步開始；沒有就找組裡有高階 AI 的人或社長
+- 按過 Abort merge：有 git 就換你做，照上面「衝突」；沒有就找組裡有高階 AI 的人或社長
