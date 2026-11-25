@@ -260,6 +260,13 @@ func _test_level_editor() -> void:
 	made.free()
 	editor.new_map()
 	_expect(editor.load_map(path) and (editor.map as SampleMap).snapshot() == saved, "編輯器：讀回來一模一樣")
+	editor.new_map()
+	var first: String = editor.save_map()
+	editor.new_map()
+	_expect(editor.make_level().is_empty(), "編輯器：又一張新地圖，還沒存檔不能做成關卡")
+	var second: String = editor.save_map()
+	_expect(not first.is_empty() and not second.is_empty() and first != second and FileAccess.file_exists(first), "編輯器：預設名字已經有了就換一個，不會蓋掉（%s、%s）" % [first.get_file(), second.get_file()])
+	editor.load_map(path)
 	editor.request_test()
 	_expect(editor.is_testing() and not (editor.get("_ask") as ConfirmationDialog).visible, "編輯器：都存好了，按試玩直接開始")
 	editor.stop_test()
@@ -295,7 +302,7 @@ func _test_level_editor() -> void:
 	_expect(speed["label"] == "走多快" and speed["max"] == 600.0 and speed["suffix"] == "px/s", "自動表單：名字讀註解、範圍和單位讀 @export_range")
 	editor.queue_free()
 	LevelEditor.forget_sessions()
-	for file: String in [path, level]:
+	for file: String in [path, level, first, second]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
 	for dir: String in ["maps", "levels"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path("res://core/level_editor/sample/" + dir))

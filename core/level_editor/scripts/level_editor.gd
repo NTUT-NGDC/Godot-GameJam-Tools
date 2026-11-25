@@ -300,7 +300,7 @@ func _build_top(row: Control) -> void:
 func _ready() -> void:
 	Engine.time_scale = 1.0
 	_setup()
-	map = editing if editing != null else _new_map()
+	map = editing if editing != null else _fresh_map()
 	map.call("ensure")
 	if editing == null:
 		_mark_saved()
@@ -839,9 +839,22 @@ func load_map(path: String) -> bool:
 
 
 func new_map() -> void:
-	map = _new_map()
+	map = _fresh_map()
 	_use_map()
 	say("新地圖")
+
+
+## 一張新地圖，名字不跟存過的一樣（有「新地圖」就叫「新地圖2」），直接按存檔才不會蓋掉舊的
+func _fresh_map() -> Resource:
+	var fresh: Resource = _new_map()
+	var base: String = fresh.get("map_name")
+	var text: String = base
+	var number: int = 2
+	while ResourceLoader.exists(_path_of(text)):
+		text = "%s%d" % [base, number]
+		number += 1
+	fresh.set("map_name", text)
+	return fresh
 
 
 func _use_map() -> void:
