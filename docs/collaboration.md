@@ -27,17 +27,23 @@
 
 什麼時候該開分支：要繼續做好幾週、或想試一個可能整個丟掉的大改。
 
-## 4. 真的衝突了
+## 4. 看大家做到哪
+
+- 一張任務一個檔案，在 `docs/tasks/`，狀態寫在卡上，**只改自己的卡**。沒有 AI 就直接打開來看
+- 有 AI：跟它說「**看進度**」，它會讀全部的卡、列成一張表。不要另外開一份大家一起改的 TASKS.md，一定會打架
+- 範例不像你們的玩法：規劃的人先寫 `docs/architecture.md`（有哪些場景、誰負責、怎麼接），只有他改
+
+## 5. 真的衝突了
 
 - GitHub Desktop 跳出 **Resolve conflicts before Merge**：先按 **Abort merge**（不要按 X），再跟 AI 說，或找社長
 - **這個檔案分工表寫是誰的，就留誰的**，另一個人把小改動重做一次。`.tscn`、`.tres` 不要手動合併
 - 看不出是誰的（`project.godot`、`game_config.tres`、兩個人都有份）：先取消，找社長或組裡有高階 AI 的人。東西都還在，不要硬按
 
-## 5. 給 AI 的規則
+## 6. 給 AI 的規則
 
-`CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 都寫了：**AI 只能改分工表上屬於你的資料夾，要動別的資料夾、`core/`、`addons/`、主場景或 `project.godot` 會先停下來問你**。AI 最容易一次改一堆檔案，看到它要改別人的東西時，先擋下來。
+`CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 都寫了：**AI 只能改分工表上屬於你的資料夾，要動別的資料夾、`core/`、`addons/`、主場景或 `project.godot` 會先停下來問你**。這些是底線；其他的（回報格式、一定要用現成的……）你們說不要就不用照。AI 最容易一次改一堆檔案，看到它要改別人的東西時，先擋下來。
 
-## 6. 要 commit 的、不要 commit 的
+## 7. 要 commit 的、不要 commit 的
 
 - 要：`.gd`、`.tscn`、`.tres`、**`.uid`**、圖片、音效、`.import`
 - 不要：`.godot/`、`build/`、`*.zip`（`.gitignore` 已經設好）
