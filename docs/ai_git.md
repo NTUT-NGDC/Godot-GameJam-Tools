@@ -13,7 +13,12 @@
 這個對話第一次要「存進度」或「同步」時問一次，之後都照他選的，不要再問：
 
 > A 你自己用 GitHub Desktop（不花 AI 額度，建議）　B 我幫你　C 這次先不要
+>
+> 要勾的：`features/noisy_floor/` 全部、`docs/tasks/02_noisy_floor.md`
+> 那句話：`加會響的地板`
 
+- 問之前先跑 `git status --short`，**題目下面一定要附那兩行**（換成真的，照「那句話怎麼取」）：很多人不回答就自己去存了
+- **他沒選、自己去存了，或直接說「做下一張」**：當作 A，之後不要再問，每次做完附那兩行就好
 - **A**：照最下面「用 GitHub Desktop」教他。**先跑 `git status --short` 看他改了什麼**（只是看，可以跑），但不要幫他 add、commit、pull、push
 - **B**：照下面的步驟做。他直接說「你幫我同步」就是 B
 - 「救回來」都由你做
@@ -24,7 +29,8 @@
 
 `git -c credential.interactive=false fetch -q`，然後 `git log -5 --format="%an：%s" HEAD..origin/main`
 
-- 沒有東西、沒有 git、失敗（沒網路、要登入）：**直接做，不用跟他說**
+- 沒有東西、沒有 git、沒網路、要登入：**直接做，不用跟他說**
+- 出現 `Permission denied`（例如 `cannot open '.git/FETCH_HEAD'`）：沙盒不讓你寫 `.git/`，**這不是「沒有新的」**（exit code 還是 0，要看文字）。用沙盒外的權限再跑一次；還是不行就說一句「我看不到組員有沒有更新，你先在 GitHub Desktop 按 **Fetch origin** 看一下」，然後繼續做，同一個對話不用再講
 - 有東西：「阿明剛更新了醫院的關卡。A 先拿最新的（建議）　B 等一下再說」。**不要自己拿**，他可能有東西還沒存
 - 他選 A：他還沒改東西，就請他在 GitHub Desktop 按 **Fetch origin** → **Pull origin**；已經改了東西就「同步」
 

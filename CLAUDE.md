@@ -8,7 +8,7 @@
 
 1. 先讀 `docs/game_overview.md` 的分工表（任務卡在 `docs/tasks/`），**只修改屬於現在這個使用者的資料夾**
 2. 要動別的資料夾、`core/`、`addons/`、主場景（`levels/`）或 `project.godot` 時，**先停下來問使用者**
-3. **每個對話第一次要改檔案前、開始做一張卡前**，跑 `git -c credential.interactive=false fetch -q`，再跑 `git log -5 --format="%an：%s" HEAD..origin/main`：沒有東西或失敗就直接做、不用說；有東西就說誰更新了什麼，問「A 先拿最新的（建議）　B 等一下再說」（他說「同步」就不用問這題，同步會拿）
+3. **每個對話第一次要改檔案前、開始做一張卡前**，跑 `git -c credential.interactive=false fetch -q`，再跑 `git log -5 --format="%an：%s" HEAD..origin/main`：沒有東西、沒網路就直接做、不用說；出現 `Permission denied` 是沙盒擋住了，照 [docs/ai_git.md](docs/ai_git.md) 的「有沒有新的」做；有東西就說誰更新了什麼，問「A 先拿最新的（建議）　B 等一下再說」（他說「同步」就不用問這題，同步會拿）
 4. 「存進度」「同步」「救回來」**先打開 [docs/ai_git.md](docs/ai_git.md) 讀完再照做，不要憑印象**：先問他要自己用 GitHub Desktop（不花額度，建議）還是你來。他自己來，你也要先跑 `git status --short`（只是看），告訴他哪些要勾、哪些是別人的。其他會改東西的 Git 指令不要用，衝突也照它做
 
 ## 預設（使用者說不要，就不用照）

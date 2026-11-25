@@ -61,7 +61,7 @@ game_config.tres   遊戲名稱、關卡（Levels）、Credits 名單
 | 計時 | `timer_display.tscn`，正數或倒數，倒數到 0 發 `time_up`（可設定時間到就輸／贏） | `core/hud/` |
 | 血條 | `health_bar.tscn`，`damage(10)`、`heal(10)`，到 0 發 `died`（可設定死掉就輸） | `core/hud/` |
 | 鏡頭 | `follow_camera.tscn` 拖進關卡：跟隨玩家（group `player`）或固定位置；可設長方形邊界（大小、偏移），編輯器裡會畫框。**不要在角色身上另外放 Camera2D**。策略、塔防用 `pan_camera.tscn`：WASD／方向鍵、滑鼠到邊緣、中鍵拖曳移動，滾輪縮放（可設要按 Ctrl），可設邊界（`set_limit_rect()`） | `core/camera/` |
-| 關卡編輯器的底 | 要讓人「在遊戲裡畫關卡、放東西」就 `extends LevelEditor`：分頁、畫筆、上一步、存讀檔、試玩、做成關卡都有了，只寫自己的工具。從 `core/level_editor/sample/` 抄，步驟看 [README](../core/level_editor/README.md)。自動表單 `LevelEditorForm`、怪物／棋子這種場景頁 `LevelEditorScenePage` 也在裡面，**不要自己重寫編輯器** | `core/level_editor/` |
+| 關卡編輯器的底 | 要讓人「在遊戲裡畫關卡、放東西」就 `extends LevelEditor`：分頁、畫筆、上一步、存讀檔、試玩、做成關卡都有了，只寫自己的工具。從 `core/level_editor/sample/` 抄，步驟看 [README](../core/level_editor/README.md)。自動表單 `LevelEditorForm`、怪物／棋子這種場景頁 `LevelEditorScenePage` 也在裡面，**不要自己重寫編輯器**。地圖多一個欄位：`@export`、`snapshot()`、`restore()`、`resize()` 四個地方都要加，少了「上一步」、「有沒有改過」會漏掉，改地圖大小會留下界外的東西（測試不一定抓得到，自己試一次上一步） | `core/level_editor/` |
 | 遊戲設定 | `GameConfig.current().game_name`、`.level_paths()`、`.credits` | `game_config.tres` |
 
 ### 技術積木（`addons/`）
